@@ -1,0 +1,28 @@
+.header{
+    background-color: rgb(121, 121, 255);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.title{
+    margin: 0;
+}
+
+.header__list{
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.header__link{
+    color: white;
+    text-decoration: none;
+}
+
+.header__link:hover{
+    text-decoration: underline;
+}
