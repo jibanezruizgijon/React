@@ -11,7 +11,7 @@ function Login(props) {
     const setEmail = (e) => {
         user.email = e.target.value;
     }
-    const handleSubmit = (e) => {
+    const enviarForm = (e) => {
         e.preventDefault();
         props.ManejarLogin(user);
     }
@@ -19,7 +19,7 @@ function Login(props) {
 
         <section className="section__login">
             <h2>Formulario de Login</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={enviarForm}>
                 <label htmlFor="name">Nombre:</label>
                 <input type="text" id="name" onChange={setName}/>
                 <br /><br />

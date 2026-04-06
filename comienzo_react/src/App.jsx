@@ -7,20 +7,23 @@ import ButtonComponent from './components/ButtonComponent'
 import Login from './components/Login'
 import ListaPeliculas from './components/ListaPeliculas'
 import ListaMemes from './components/ListaMemes'
+import ListaAnimales from './components/ListaAnimales'
 
 function App() {
 
   const decirHola = () => {
-    console.log('hola');
+    console.log('hola a ' + user.name);
   }
-  // Hooks de un número que comienza en 0
+  // Hooks de un número que comienza en 0 (variable reactiva)
   const [numero, setNumero] = useState(0);
 
   const [greeting, setGreeting] = useState('Bienvenidos desde greting');
+  const [subtitulo, setSubtitulo] = useState('Subtitulo para el header');
   const sumar = () => {
     setNumero(numero + 1);
   }
 
+  // cambia el contenido del input y lo muestra por consola cada vez que se escribe algo en el input
   const cambiarContenido = (e) => {
     console.log(e.target.value);
   }
@@ -37,9 +40,11 @@ function App() {
     setUser(userInfo);
   }
 
-  const condicional = false;
+  // es un booleano que se puede usar para mostrar o ocultar elementos en la interfaz de usuario. 
+  // Si es verdadero, se muestra el elemento; si es falso, se oculta.  
+  const condicional = true;
 
-const [peliculas, setPeliculas] = useState(true);
+  const [peliculas, setPeliculas] = useState(true);
   // useEffect (() => {
   //   console.log('Ejecucción cada vez que se renderice el componente');
   // })
@@ -49,7 +54,7 @@ const [peliculas, setPeliculas] = useState(true);
   }, [user])
   return (
     <>
-      <HeaderComponent greeting={greeting} links={links}></HeaderComponent>
+      <HeaderComponent greeting={greeting} subtitulo={subtitulo} links={links}></HeaderComponent>
       <hr />
       <main className='main__content'>
 
@@ -68,7 +73,7 @@ const [peliculas, setPeliculas] = useState(true);
         <ButtonComponent ></ButtonComponent>
         <br />
         {/* Condicionales  */}
-        {condicional && <h2>La condicionales verdadera</h2>}
+        {condicional && <h2>La condicional es verdadera</h2>}
         {!condicional && <h2>La condicional no es verdadera</h2>}
         {/* Condicional como si tuviera if y else */}
         {
@@ -77,13 +82,15 @@ const [peliculas, setPeliculas] = useState(true);
             : (<h2>La condicional no es verdadera</h2>)
         }
         <hr />
-        
+
       </main>
       <hr />
       <section className='section__hook'>
         <button onClick={() => setPeliculas(!peliculas)}>Mostar Peliculas</button>
         {peliculas && <ListaPeliculas></ListaPeliculas>}
       </section>
+      <hr />
+      {/* <ListaAnimales></ListaAnimales> */}
       <ListaMemes></ListaMemes>
     </>
   )

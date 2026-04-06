@@ -1,3 +1,4 @@
+import './ListaAnimales.css';
 function ListaAnimales(){
     const animales = [
         {
@@ -21,8 +22,18 @@ function ListaAnimales(){
         return(
             <li key={animal.id}>
                 <h3>{animal.name}</h3>
-                <p> <strong>Edad:</strong> {animal.edad}</p>
+                <p> <span className="sub">Edad: </span> {animal.edad}</p>
             </li>
         )
     })
+
+    return(
+        <section>
+            <h2>Lista de animales</h2>
+            <ul>
+                {HtmlAnimales}
+            </ul>
+        </section>
+    )
 }
+export default ListaAnimales;
