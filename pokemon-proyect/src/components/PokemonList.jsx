@@ -1,4 +1,4 @@
-import { use, useContext, useEffect, useState } from "react";
+import { useContext, useEffect} from "react";
 import PokemonCard from "./PokemonCard"
 import './PokemonList.css'
 import GetForm from "./GetForm";

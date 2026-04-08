@@ -1,3 +1,4 @@
+import DetailsWrapper from '../hoc/DetailsWrapper';
 import './PokemonDetails.css'
 import { useState } from 'react';
 function PokemonDetails2(props) {
@@ -18,4 +19,4 @@ function PokemonDetails2(props) {
     )
 }
 
-export default  DetailsWrapper(PokemonDetails2)
+export default  PokemonDetails2
