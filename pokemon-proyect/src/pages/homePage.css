@@ -26,3 +26,8 @@
 .link:active{
     color: #0056b3;
 }
+
+.logo{
+    width: 300px;
+    margin-bottom: 20px;
+}
