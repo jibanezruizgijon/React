@@ -11,7 +11,7 @@ const ProductoItem = memo(({ producto, onAumentar, onReducir, onEliminarFila, is
             {producto.cantidad}
           </Badge>
           <div>
-            <span className="fw-bold text-dark d-block lh-1 text-truncate" style={{maxWidth: '150px'}} title={producto.nombre}>{producto.nombre}</span>
+            <span className="fw-bold text-dark d-block lh-1 text-truncate mw-150" title={producto.nombre}>{producto.nombre}</span>
             <span className="text-secondary small d-block">${producto.precio.toFixed(2)} c/u</span>
           </div>
         </div>
@@ -43,7 +43,7 @@ ProductoItem.displayName = "ProductoItem";
 export default function CuentaDetalle({ mesaSeleccionada, productosCuenta, onAgregarProducto, onCerrarCuenta, onAumentar, onReducir, onEliminarFila }) {
   if (!mesaSeleccionada) {
     return (
-      <Card className="h-100 border-dashed bg-light d-flex align-items-center justify-content-center text-muted p-5 text-center min-vh-50" style={{ borderStyle: 'dashed', borderWidth: '2px' }}>
+      <Card className="h-100 border-dashed-2 bg-light d-flex align-items-center justify-content-center text-muted p-5 text-center min-vh-50 rounded-4">
         <span className="display-1 mb-3 opacity-50">🎫</span>
         <h4 className="fw-medium">Selecciona una mesa para ver su cuenta</h4>
       </Card>
@@ -70,7 +70,7 @@ export default function CuentaDetalle({ mesaSeleccionada, productosCuenta, onAgr
         </Badge>
       </Card.Header>
 
-      <Card.Body className="d-flex flex-column p-3 overflow-auto custom-scrollbar" style={{maxHeight: '600px'}}>
+      <Card.Body className="d-flex flex-column p-3 overflow-auto custom-scrollbar mh-600">
         {productosCuenta.length === 0 ? (
           <div className="d-flex flex-column align-items-center justify-content-center h-100 text-muted my-5 py-5">
             <span className="display-4 mb-3">🍽️</span>

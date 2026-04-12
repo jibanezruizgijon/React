@@ -5,12 +5,12 @@ import { obtenerPersonal } from '../../servicios/api';
 import { Card, Badge, Spinner, Button, Row, Col } from 'react-bootstrap';
 
 const TarjetaTrabajador = memo(({ trabajador }) => (
-  <Card className="mb-3 border-0 shadow-sm transition-all hover-transform">
+  <Card className="mb-3 border-0 shadow-sm">
     <Card.Body className="d-flex flex-column flex-md-row align-items-center justify-content-between gap-4 p-4">
       <div className="flex-grow-1 text-center text-md-start">
         <div className="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
           <h3 className="h5 fw-bold text-dark mb-0">{trabajador.nombre}</h3>
-          <Badge bg={trabajador.estado ? 'success' : 'danger'} pill className="text-uppercase" style={{fontSize: '0.7rem'}}>
+          <Badge bg={trabajador.estado ? 'success' : 'danger'} pill className="text-uppercase fs-8">
             {trabajador.estado ? 'Alta' : 'De Baja'}
           </Badge>
         </div>
@@ -18,11 +18,11 @@ const TarjetaTrabajador = memo(({ trabajador }) => (
         
         <div className="d-flex flex-column flex-sm-row gap-2 gap-md-4 text-secondary small fw-medium">
           <div className="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-            <Phone className="text-primary w-4 h-4" />
+            <Phone className="text-primary" size={16} />
             <span>{trabajador.telefono}</span>
           </div>
           <div className="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-            <Mail className="text-primary w-4 h-4" />
+            <Mail className="text-primary" size={16} />
             <span>{trabajador.correo}</span>
           </div>
         </div>

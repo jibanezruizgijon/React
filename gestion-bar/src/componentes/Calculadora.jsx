@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Calculator, X } from 'lucide-react';
 import { Card, Button, Row, Col } from 'react-bootstrap';
 
+
 export default function Calculadora({ onClose }) {
   const [display, setDisplay] = useState('0');
 
@@ -32,7 +33,7 @@ export default function Calculadora({ onClose }) {
   ];
 
   return (
-    <Card className="position-absolute end-0 mt-2 shadow-lg border-0" style={{ top: '100%', width: '280px', borderRadius: '16px', overflow: 'hidden', zIndex: 9999 }}>
+    <Card className="position-absolute end-0 mt-2 shadow-lg border-0 calculator-card">
       <Card.Header className="bg-dark text-white d-flex justify-content-between align-items-center p-3 border-0">
         <div className="d-flex align-items-center gap-2">
           <Calculator className="w-5 h-5" />
@@ -44,7 +45,7 @@ export default function Calculadora({ onClose }) {
       </Card.Header>
       
       <Card.Body className="bg-light p-3">
-        <div className="bg-white border rounded p-3 mb-3 text-end fs-3 fw-bold text-dark font-monospace shadow-sm" style={{ minHeight: '60px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+        <div className="bg-white border rounded p-3 mb-3 text-end fs-3 fw-bold text-dark font-monospace shadow-sm mh-60 overflow-auto text-nowrap custom-scrollbar">
           {display}
         </div>
         

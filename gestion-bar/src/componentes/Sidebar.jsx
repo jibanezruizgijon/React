@@ -50,7 +50,6 @@ export default function Sidebar({ usuario, show, onHide }) {
               }`
             }
             onClick={onHide} // Close offcanvas on navigation mapping mobile
-            style={{ transition: '0.2s ease-in-out' }}
           >
             {link.icon}
             <span>{link.text}</span>
@@ -68,8 +67,7 @@ export default function Sidebar({ usuario, show, onHide }) {
     <>
       {/* Sidebar for Desktop */}
       <div 
-        className="d-none d-lg-block bg-dark text-white shadow-lg flex-shrink-0" 
-        style={{ width: '280px', minHeight: '100%' }}
+        className="d-none d-lg-block bg-dark text-white shadow-lg flex-shrink-0 sidebar-desktop" 
       >
         <SidebarContent />
       </div>

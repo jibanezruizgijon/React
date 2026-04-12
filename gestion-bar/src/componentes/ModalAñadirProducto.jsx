@@ -65,14 +65,13 @@ export default function ModalAñadirProducto({ show, onHide, onAdd }) {
             >
               {categorias.map(cat => (
                 <Tab eventKey={cat} title={cat} key={cat}>
-                  <div className="d-grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
+                  <div className="grid-auto-200">
                     {productos.filter(p => p.categoria === cat).map(p => (
                       <Button
                         key={p.id}
                         variant={productoSelecto?.id === p.id ? "primary" : "outline-secondary"}
-                        className="p-3 text-start h-100 shadow-sm border"
+                        className="p-3 text-start h-100 shadow-sm border border-2"
                         onClick={() => setProductoSelecto(p)}
-                        style={{ borderWidth: '2px' }}
                       >
                         <div className="fw-bold text-truncate">{p.nombre}</div>
                         <div className={productoSelecto?.id === p.id ? "text-light" : "text-primary fw-semibold"}>
@@ -91,7 +90,7 @@ export default function ModalAñadirProducto({ show, onHide, onAdd }) {
                   <h5 className="mb-1 fw-bold">{productoSelecto.nombre}</h5>
                   <div className="text-secondary">Precio unitario: ${productoSelecto.precio.toFixed(2)}</div>
                 </div>
-                <div style={{ maxWidth: '150px' }}>
+                <div className="mw-150 w-100">
                   <Form.Label className="small fw-bold text-uppercase mb-1">Cantidad</Form.Label>
                   <InputGroup>
                     <Button 

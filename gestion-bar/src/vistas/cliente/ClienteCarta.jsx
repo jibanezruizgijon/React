@@ -24,13 +24,13 @@ export default function ClienteCarta() {
         <h1 className="h4 fw-bold m-0">Nombre del restaurante</h1>
       </header>
       
-      <Container className="pt-3 max-w-md mx-auto" style={{ maxWidth: '600px' }}>
+      <Container className="pt-3 max-w-md mx-auto mw-600">
         {/* Filtros mockup */}
         <div className="d-flex flex-wrap gap-2 mb-4 px-2">
           <Badge bg="info" className="py-2 px-3 fw-normal">Sin gluten</Badge>
           <Badge bg="info" className="py-2 px-3 fw-normal">Vegetariano</Badge>
           <Badge bg="primary" className="py-2 px-3 fw-normal bg-opacity-75">Precio</Badge>
-          <Badge bg="primary" className="py-2 px-3 fw-normal bg-opacity-75" onClick={() => setShowAlergenos(true)} style={{cursor: 'pointer'}}>
+          <Badge bg="primary" className="py-2 px-3 fw-normal bg-opacity-75 cursor-pointer" onClick={() => setShowAlergenos(true)}>
             Alergenos
           </Badge>
         </div>
@@ -39,11 +39,10 @@ export default function ClienteCarta() {
           {productos.map(p => (
             <Card 
               key={p.id} 
-              className="border-0 shadow-sm overflow-hidden flex-row hover-transform cursor-pointer" 
-              style={{ backgroundColor: '#e2edff', borderRadius: '12px' }}
+              className="border-0 shadow-sm overflow-hidden flex-row hover-transform cursor-pointer bg-soft-blue rounded-12" 
               onClick={() => setProductoSeleccionado(p)}
             >
-              <div style={{ width: '100px', height: '100px' }} className="flex-shrink-0 bg-white p-2">
+              <div className="img-100 flex-shrink-0 bg-white p-2">
                 <img 
                   src={`https://source.unsplash.com/random/200x200/?food,${encodeURI(p.nombre)}`} 
                   alt={p.nombre} 
@@ -70,7 +69,7 @@ export default function ClienteCarta() {
       <Modal show={!!productoSeleccionado} onHide={() => setProductoSeleccionado(null)} centered size="md" className="modal-fullscreen-sm-down">
         {productoSeleccionado && (
           <div className="bg-light h-100 d-flex flex-column">
-             <div className="bg-dark position-relative" style={{ height: '350px' }}>
+             <div className="bg-dark position-relative h-350">
                 <img 
                   src={`https://source.unsplash.com/random/800x600/?food,${encodeURI(productoSeleccionado.nombre)}`} 
                   alt={productoSeleccionado.nombre} 
@@ -78,7 +77,7 @@ export default function ClienteCarta() {
                 />
              </div>
              
-             <div className="flex-grow-1 p-4 text-center bg-light" style={{ backgroundColor: '#e2edff !important' }}>
+             <div className="flex-grow-1 p-4 text-center bg-soft-blue">
                <h2 className="display-6 fw-normal text-dark mb-1">{productoSeleccionado.nombre}</h2>
                <p className="text-secondary mb-4">Producto exótico elaborado por nuestro chef asiático</p>
                

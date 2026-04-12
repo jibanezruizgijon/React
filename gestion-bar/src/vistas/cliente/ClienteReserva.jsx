@@ -70,9 +70,9 @@ export default function ClienteReserva() {
           <h1 className="h4 fw-bold m-0">Nombre del restaurante</h1>
         </header>
 
-        <Container className="max-w-md mx-auto d-flex flex-column align-items-center" style={{ maxWidth: '400px' }}>
-          <Card className="border-0 shadow-sm w-100 text-center py-5 px-3 mb-4 rounded-4" style={{ backgroundColor: '#e2edff' }}>
-             <div className="mx-auto mb-3 text-success border border-success rounded-circle d-flex align-items-center justify-content-center" style={{ width: '60px', height: '60px'}}>
+        <Container className="max-w-md mx-auto d-flex flex-column align-items-center mw-400">
+          <Card className="border-0 shadow-sm w-100 text-center py-5 px-3 mb-4 rounded-4 bg-soft-blue">
+             <div className="mx-auto mb-3 text-success border border-success rounded-circle d-flex align-items-center justify-content-center square-60">
                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} width="32" height="32">
                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                </svg>
@@ -127,14 +127,14 @@ export default function ClienteReserva() {
         <h1 className="h4 fw-bold m-0">Nombre del restaurante</h1>
       </header>
 
-      <Container className="max-w-md mx-auto" style={{ maxWidth: '400px' }}>
+      <Container className="max-w-md mx-auto mw-400">
         <div className="mb-4">
           <Button as={Link} to="/" variant="primary" className="rounded-pill shadow-sm py-2 px-4 fw-bold">
             Volver Inicio
           </Button>
         </div>
 
-        <Card className="border-0 shadow-sm rounded-4" style={{ backgroundColor: '#e2edff' }}>
+        <Card className="border-0 shadow-sm rounded-4 bg-soft-blue">
           <Card.Body className="p-4">
             <Form onSubmit={manejarEnvio}>
               <Form.Group className="mb-4">

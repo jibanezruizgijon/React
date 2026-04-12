@@ -24,14 +24,14 @@ export default function ModalAlergenos({ show, onHide }) {
           {alergenosData.map((alergeno) => (
             <ListGroup.Item key={alergeno.id} className="d-flex align-items-start border-bottom py-3 px-4">
                <div 
-                  className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3 flex-shrink-0" 
-                  style={{ width: '40px', height: '40px', backgroundColor: alergeno.color }}
+                  className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3 flex-shrink-0 square-40" 
+                  style={{ backgroundColor: alergeno.color }}
                >
                  {alergeno.simbolo}
                </div>
                <div>
                  <h6 className="fw-bold mb-1">{alergeno.nombre}</h6>
-                 <p className="text-secondary small mb-0" style={{ lineHeight: '1.2' }}>{alergeno.desc}</p>
+                  <p className="text-secondary small mb-0 lh-sm">{alergeno.desc}</p>
                </div>
             </ListGroup.Item>
           ))}

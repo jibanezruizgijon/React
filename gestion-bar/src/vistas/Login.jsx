@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { validarAcceso } from '../../servicios/api';
+import { validarAcceso } from '../servicios/api';
 import { Container, Card, Row, Col, Button, Alert, Spinner } from 'react-bootstrap';
 
 export default function Login({ onLoginExitoso }) {
@@ -46,7 +46,7 @@ export default function Login({ onLoginExitoso }) {
 
   return (
     <div className="bg-dark min-vh-100 d-flex flex-column justify-content-center align-items-center p-3 p-md-4">
-      <Card className="shadow-lg p-4 p-md-5 mx-auto" style={{ maxWidth: '400px', width: '100%', borderRadius: '24px' }}>
+      <Card className="shadow-lg p-4 p-md-5 mx-auto login-card rounded-24">
         <div className="text-center mb-5">
           <h1 className="h2 fw-bold text-dark mb-2">
             Acceso<span className="text-primary">Personal</span>
@@ -59,16 +59,11 @@ export default function Login({ onLoginExitoso }) {
           {[...Array(4)].map((_, i) => (
             <div 
               key={i} 
-              className={`rounded-circle transition-all ${
+              className={`rounded-circle transition-all pin-dot ${
                 i < pin.length 
-                  ? 'bg-primary' 
+                  ? 'active bg-primary' 
                   : 'bg-light border'
               } ${error ? 'bg-danger border-danger' : ''}`}
-              style={{ 
-                width: '18px', 
-                height: '18px', 
-                transform: i < pin.length ? 'scale(1.2)' : 'scale(1)' 
-              }}
             />
           ))}
         </div>
@@ -94,8 +89,7 @@ export default function Login({ onLoginExitoso }) {
                 variant="light"
                 onClick={() => manejarClickNumero(num.toString())}
                 disabled={cargando}
-                className="w-100 py-3 fs-3 fw-bold text-dark shadow-sm border border-light"
-                style={{ borderRadius: '16px' }}
+                className="w-100 py-3 fs-3 fw-bold text-dark shadow-sm border border-light rounded-16"
               >
                 {num}
               </Button>
@@ -107,8 +101,7 @@ export default function Login({ onLoginExitoso }) {
               variant="light"
               onClick={() => manejarClickNumero('0')}
               disabled={cargando}
-              className="w-100 py-3 fs-3 fw-bold text-dark shadow-sm border border-light"
-              style={{ borderRadius: '16px' }}
+              className="w-100 py-3 fs-3 fw-bold text-dark shadow-sm border border-light rounded-16"
             >
               0
             </Button>
@@ -119,9 +112,8 @@ export default function Login({ onLoginExitoso }) {
               variant="danger"
               onClick={manejarBorrar}
               disabled={cargando || pin.length === 0}
-              className="w-100 py-3 d-flex justify-content-center align-items-center shadow-sm border-0"
+              className="w-100 py-3 d-flex justify-content-center align-items-center shadow-sm border-0 rounded-16"
               title="Borrar"
-              style={{ borderRadius: '16px' }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />

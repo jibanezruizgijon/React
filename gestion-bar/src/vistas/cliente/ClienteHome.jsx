@@ -12,9 +12,9 @@ export default function ClienteHome() {
         <h1 className="h4 fw-bold m-0">Nombre del restaurante</h1>
       </header>
 
-      <Container className="flex-grow-1 d-flex flex-column justify-content-center p-4 gap-4 max-w-md mx-auto" style={{ maxWidth: '500px' }}>
+      <Container className="flex-grow-1 d-flex flex-column justify-content-center p-4 gap-4 max-w-md mx-auto mw-500">
         <Link to="/carta" className="text-decoration-none">
-          <Card className="border-0 shadow-sm text-center py-5 hover-transform" style={{ backgroundColor: '#e2edff', borderRadius: '16px' }}>
+          <Card className="border-0 shadow-sm text-center py-5 hover-transform bg-soft-blue rounded-16">
             <Card.Body>
               <h2 className="text-dark m-0 fw-normal">Ver carta</h2>
             </Card.Body>
@@ -22,7 +22,7 @@ export default function ClienteHome() {
         </Link>
 
         <Link to="/reserva" className="text-decoration-none">
-          <Card className="border-0 shadow-sm text-center py-5 hover-transform" style={{ backgroundColor: '#e2edff', borderRadius: '16px' }}>
+          <Card className="border-0 shadow-sm text-center py-5 hover-transform bg-soft-blue rounded-16">
             <Card.Body>
               <h2 className="text-dark m-0 fw-normal">Reserva de Mesa</h2>
             </Card.Body>

@@ -5,14 +5,13 @@ import { Card, Row, Col, Badge, Button, Spinner } from 'react-bootstrap';
 
 const ProductoCarta = memo(({ producto }) => (
   <Card className="h-100 border-0 shadow-sm flex-row overflow-hidden transition-all hover-transform">
-    <div className="bg-light d-flex align-items-center justify-content-center p-2" style={{ width: '130px' }}>
+    <div className="bg-light d-flex align-items-center justify-content-center p-2 img-130">
       <img 
         src={`https://source.unsplash.com/random/200x200/?food,${encodeURI(producto.nombre)}`} 
         alt={producto.nombre} 
-        className="w-100 h-100 object-fit-cover rounded shadow-sm opacity-75"
-        style={{ aspectRatio: '1/1' }}
+        className="w-100 h-100 object-fit-cover rounded shadow-sm opacity-75 aspect-square"
         onError={(e) => {
-           e.target.style.display = 'none';
+           e.target.classList.add('d-none');
         }}
       />
     </div>
@@ -20,7 +19,7 @@ const ProductoCarta = memo(({ producto }) => (
     <Card.Body className="d-flex flex-column justify-content-between p-3">
       <div>
         <h3 className="h6 fw-bold text-dark text-truncate mb-1" title={producto.nombre}>{producto.nombre}</h3>
-        <p className="small text-secondary mb-0" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+        <p className="small text-secondary mb-0 line-clamp-2">
           {producto.categoria}. Preparado con los mejores ingredientes frescos.
         </p>
       </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import Login from './trabajador/Login';
+import Login from './Login';
 import PanelPrincipal from './trabajador/PanelPrincipal';
 import PanelTrabajadores from './administrador/PanelTrabajadores';
 import FormularioTrabajador from './administrador/FormularioTrabajador';

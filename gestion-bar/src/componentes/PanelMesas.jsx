@@ -19,14 +19,11 @@ const MesaItem = memo(({ mesa, onClick }) => {
   return (
     <Card 
       onClick={() => onClick(mesa)}
-      className={`h-100 text-center cursor-pointer shadow-sm border-${config.border}`}
-      style={{ cursor: 'pointer', transition: 'transform 0.2s', borderWidth: '2px' }}
-      onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-      onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+      className={`h-100 text-center cursor-pointer shadow-sm border-${config.border} hover-lift border-2`}
     >
       <Card.Body className="d-flex flex-column align-items-center justify-content-center p-4">
         {mesa.capacidad && (
-          <Badge bg="secondary" className="position-absolute py-1 px-2 mb-2" style={{ top: '10px', right: '10px' }}>
+          <Badge bg="secondary" className="position-absolute top-0 end-0 m-2 mt-2 me-2 py-1 px-2 mb-2">
             👤 {mesa.capacidad}
           </Badge>
         )}
@@ -59,13 +56,13 @@ export default function PanelMesas({ mesas, onSeleccionarMesa }) {
       {/* Leyenda */}
       <div className="mt-5 d-flex gap-4 small fw-medium justify-content-center border-top pt-4 text-secondary">
         <div className="d-flex align-items-center gap-2">
-          <span className="rounded-circle bg-success" style={{width: '12px', height: '12px'}}></span> Libre
+          <span className="rounded-circle bg-success square-12"></span> Libre
         </div>
         <div className="d-flex align-items-center gap-2">
-          <span className="rounded-circle bg-danger" style={{width: '12px', height: '12px'}}></span> Ocupada
+          <span className="rounded-circle bg-danger square-12"></span> Ocupada
         </div>
         <div className="d-flex align-items-center gap-2">
-          <span className="rounded-circle bg-warning" style={{width: '12px', height: '12px'}}></span> Reservada
+          <span className="rounded-circle bg-warning square-12"></span> Reservada
         </div>
       </div>
     </div>

@@ -100,7 +100,7 @@ export default function PanelInventario() {
           </Card.Header>
           
           <Card.Body className="p-0">
-            <div className="p-4" style={{maxHeight: '600px', overflowY: 'auto'}}>
+            <div className="p-4 mh-600 overflow-auto custom-scrollbar">
               {Object.keys(porCategoria).map(cat => (
                 <div key={cat} className="mb-4">
                   <h3 className="fs-6 bg-light text-primary fw-bold p-3 m-0 rounded-top border border-bottom-0">
@@ -111,9 +111,9 @@ export default function PanelInventario() {
                     <thead className="table-light">
                       <tr>
                         <th className="text-secondary small text-uppercase">Producto</th>
-                        <th className="text-center text-secondary small text-uppercase" style={{width: '90px'}}>Stock</th>
-                        <th className="text-center text-secondary small text-uppercase" style={{width: '90px'}}>Mínimo</th>
-                        <th className="text-center text-secondary small text-uppercase" style={{width: '90px'}}>Crítico</th>
+                        <th className="text-center text-secondary small text-uppercase w-90">Stock</th>
+                        <th className="text-center text-secondary small text-uppercase w-90">Mínimo</th>
+                        <th className="text-center text-secondary small text-uppercase w-90">Crítico</th>
                       </tr>
                     </thead>
                     <tbody>

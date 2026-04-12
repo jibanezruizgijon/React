@@ -7,7 +7,7 @@ export default function Cabecera({ usuarioAutenticado, onCerrarSesion, onToggleS
   const [mostrarCalc, setMostrarCalc] = useState(false);
 
   return (
-    <header className="mb-4 d-flex justify-content-between align-items-center bg-white p-3 p-md-4 rounded shadow-sm border position-relative" style={{ zIndex: 1040 }}>
+    <header className="mb-4 d-flex justify-content-between align-items-center bg-white p-3 p-md-4 rounded shadow-sm border position-relative z-header">
       <div className="d-flex align-items-center gap-3">
         <Button variant="outline-primary" className="d-lg-none" onClick={onToggleSidebar}>
           <Menu className="w-5 h-5" />
