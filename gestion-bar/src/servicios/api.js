@@ -102,6 +102,27 @@ export const guardarPedido = async (mesaId, producto, cantidad = 1) => {
   return Promise.resolve({ exito: true, cuenta: [...ctx] });
 };
 
+export const actualizarCantidadProducto = async (mesaId, productoIdCuenta, delta) => {
+  if (!cuentasActivas[mesaId]) return Promise.resolve({ exito: false });
+  const ctx = cuentasActivas[mesaId];
+  const index = ctx.findIndex(p => p.id === productoIdCuenta);
+  
+  if (index >= 0) {
+    ctx[index].cantidad += delta;
+    if (ctx[index].cantidad <= 0) {
+      ctx.splice(index, 1);
+    }
+  }
+  return Promise.resolve({ exito: true, cuenta: [...ctx] });
+};
+
+export const eliminarProductoCuenta = async (mesaId, productoIdCuenta) => {
+  if (!cuentasActivas[mesaId]) return Promise.resolve({ exito: false });
+  const ctx = cuentasActivas[mesaId];
+  cuentasActivas[mesaId] = ctx.filter(p => p.id !== productoIdCuenta);
+  return Promise.resolve({ exito: true, cuenta: [...cuentasActivas[mesaId]] });
+};
+
 export const cerrarCuenta = async (mesaId) => {
   // Liberar mesa 
   baseMesas = baseMesas.map(m => m.id === mesaId ? { ...m, estado: 'libre' } : m);

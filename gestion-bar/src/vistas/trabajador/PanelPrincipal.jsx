@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PanelMesas from '../../componentes/PanelMesas';
 import CuentaDetalle from '../../componentes/CuentaDetalle';
-import { obtenerMesas, actualizarEstadoMesa, obtenerCuentaMesa, guardarPedido, cerrarCuenta } from '../../servicios/api';
+import { obtenerMesas, actualizarEstadoMesa, obtenerCuentaMesa, guardarPedido, cerrarCuenta, actualizarCantidadProducto, eliminarProductoCuenta } from '../../servicios/api';
 import { Row, Col, Spinner, Container } from 'react-bootstrap';
 import ModalAñadirProducto from '../../componentes/ModalAñadirProducto';
 
@@ -63,6 +63,24 @@ export default function PanelPrincipal({ usuarioAutenticado }) {
     cargarMesas();
   };
 
+  const manejarAumentar = async (productoIdCuenta) => {
+    if (!mesaSeleccionada) return;
+    const { cuenta } = await actualizarCantidadProducto(mesaSeleccionada.id, productoIdCuenta, 1);
+    setProductosCuenta(cuenta);
+  };
+  
+  const manejarReducir = async (productoIdCuenta) => {
+    if (!mesaSeleccionada) return;
+    const { cuenta } = await actualizarCantidadProducto(mesaSeleccionada.id, productoIdCuenta, -1);
+    setProductosCuenta(cuenta);
+  };
+
+  const manejarEliminarFila = async (productoIdCuenta) => {
+    if (!mesaSeleccionada) return;
+    const { cuenta } = await eliminarProductoCuenta(mesaSeleccionada.id, productoIdCuenta);
+    setProductosCuenta(cuenta);
+  };
+
   if (cargando) {
     return (
       <div className="d-flex justify-content-center align-items-center h-100">
@@ -86,6 +104,9 @@ export default function PanelPrincipal({ usuarioAutenticado }) {
             productosCuenta={productosCuenta}
             onAgregarProducto={manejarAbrirModal}
             onCerrarCuenta={manejarCerrarCuenta}
+            onAumentar={manejarAumentar}
+            onReducir={manejarReducir}
+            onEliminarFila={manejarEliminarFila}
           />
         </Col>
       </Row>
