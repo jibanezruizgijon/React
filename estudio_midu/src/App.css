@@ -1,0 +1,42 @@
+.tw-followCard-button {
+    border: 0;
+    border-radius: 999px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 16px;
+    padding: 12px 28px;
+    background-color: #000; /* Color por defecto para 'Seguir' */
+}
+
+/* Estilos para cuando ya estamos siguiendo */
+.tw-followCard-button.is-following {
+    background-color: #5CD3A8;
+    width: 170px; /* Un poco más de ancho para que quepa el texto largo */
+}
+
+/* Efecto hover solo cuando estamos siguiendo */
+.tw-followCard-button.is-following:hover {
+    background-color: rgba(255, 0, 0, 0.2); /* Fondo rojizo suave */
+    color: red;
+    border: 1px solid red;
+}
+
+/* Intercambio de mensajes en hover */
+.tw-followCard-button.is-following:hover .followText {
+    display: none;
+}
+
+.tw-followCard-button.is-following:hover .stopFollow {
+    display: block;
+}
+
+/* Control de visibilidad de los spans */
+.followText {
+    display: block;
+}
+
+.stopFollow {
+    display: none;
+}
