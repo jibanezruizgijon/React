@@ -1,19 +1,13 @@
-import { useContext, useEffect} from "react";
+import { useContext, useEffect, useMemo } from "react";
 import PokemonCard from "./PokemonCard"
 import './PokemonList.css'
 import GetForm from "./GetForm";
 import { PokemonContext } from "../context/pokemon.context";
 
 function PokemonList(props) {
-    const { pokemons, setPokemons } = useContext(PokemonContext);
+    const { pokemons, setPokemons, fetchPokemon } = useContext(PokemonContext);
 
     const { PokemonSelected } = props;
-    const fetchPokemon = async (index) => {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${index}`)
-        const data = await response.json()
-        return data;
-    }
-
 
     const getPokemons = async (from, to) => {
         const pokemons = []
@@ -28,14 +22,16 @@ function PokemonList(props) {
         getPokemons(1, 15);
     }, [])
 
-    const pokemonCards = pokemons.map(pokemon => {
+    const pokemonCards = useMemo(() => pokemons.map((pokemon) => {
         return <PokemonCard
             key={pokemon.id}
             pokemon={pokemon}
             PokemonSelected={PokemonSelected}
             PokemonSelected2={props.PokemonSelected2}
         ></PokemonCard>
-    })
+    }),
+        [pokemons]
+    );
     return (
         <div>
             <GetForm getPokemons={getPokemons}></GetForm>

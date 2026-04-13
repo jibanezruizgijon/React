@@ -4,12 +4,15 @@ import './index.css'
 import App from './App.jsx'
 import { PokemonProviderWrapper } from './context/pokemon.context.jsx'
 import { BrowserRouter } from 'react-router-dom'
+import { UserProviderWrapper } from './context/user.context.jsx'
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
-        <PokemonProviderWrapper>
-            <App />
-        </PokemonProviderWrapper>
+        <UserProviderWrapper>
+            <PokemonProviderWrapper>
+                <App />
+            </PokemonProviderWrapper>
+        </UserProviderWrapper>
     </BrowserRouter>
 
 )

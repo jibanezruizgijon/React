@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import DetailsWrapper from '../hoc/DetailsWrapper';
 import './PokemonDetails.css'
 function PokemonDetails(props) {
@@ -9,6 +10,7 @@ function PokemonDetails(props) {
                 <h3>Pokemon 1</h3>
                 <h4>Likes: {likes} </h4>
                 <button onClick={aumentarLikes}>Like</button>
+                <Link to={`/pokemons/${pokemon.id}`}>Ver detalles</Link> 
             </div>
             <div className="pokemon__container">
                 <h2 className='pokemon__selected-name'>{pokemon.name}</h2>

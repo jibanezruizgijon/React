@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import './PokemonCard.css'
+import React from "react";
 function PokemonCard(props) {
   const { pokemon, PokemonSelected } = props;
 
@@ -15,4 +16,4 @@ function PokemonCard(props) {
   );
 }
 
-export default PokemonCard
+export default React.memo(PokemonCard);
