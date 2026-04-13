@@ -12,7 +12,6 @@ export default defineConfig([
       js.configs.recommended,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
-      [react-app, react-app/jest],
     ],
     languageOptions: {
       ecmaVersion: 2020,
