@@ -5,7 +5,7 @@ import { obtenerMesas, actualizarEstadoMesa, obtenerCuentaMesa, guardarPedido, c
 import { Row, Col, Spinner, Container } from 'react-bootstrap';
 import ModalAñadirProducto from '../../componentes/ModalAñadirProducto';
 
-export default function PanelPrincipal({ usuarioAutenticado }) {
+export default function PanelPrincipal() {
   const [mesas, setMesas] = useState([]);
   const [mesaSeleccionada, setMesaSeleccionada] = useState(null);
   const [productosCuenta, setProductosCuenta] = useState([]);

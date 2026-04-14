@@ -7,8 +7,10 @@ import {
 } from 'lucide-react';
 import { Offcanvas, Nav, Badge } from 'react-bootstrap';
 import '../estilos/global.css'; // For custom styling if needed
+import { useAuth } from '../contextos/AuthContext';
 
-export default function Sidebar({ usuario, show, onHide }) {
+export default function Sidebar({ show, onHide }) {
+  const { usuario } = useAuth();
   const isAdmin = usuario?.rol === 'Administrador';
 
   const adminLinks = [

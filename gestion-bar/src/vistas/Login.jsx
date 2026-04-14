@@ -1,34 +1,26 @@
 import { useState } from 'react';
 import { validarAcceso } from '../servicios/api';
-import { Container, Card, Row, Col, Button, Alert, Spinner } from 'react-bootstrap';
+import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
+import { useAuth } from '../contextos/AuthContext';
 
-export default function Login({ onLoginExitoso }) {
+export default function Login() {
+  const { login } = useAuth();
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
 
-  const manejarClickNumero = (numero) => {
-    if (pin.length < 4) {
-      const nuevoPin = pin + numero;
-      setPin(nuevoPin);
-      setError('');
-      
-      if (nuevoPin.length === 4) {
-        verificarPin(nuevoPin);
-      }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (pin.length > 0) {
+      verificarPin(pin);
     }
-  };
-
-  const manejarBorrar = () => {
-    setPin(pin.slice(0, -1));
-    setError('');
   };
 
   const verificarPin = async (codigo) => {
     setCargando(true);
     try {
       const usuario = await validarAcceso(codigo);
-      onLoginExitoso(usuario);
+      login(usuario);
     } catch (err) {
       setError(err.message || 'Código incorrecto. Inténtelo de nuevo.');
       setPin('');
@@ -37,13 +29,6 @@ export default function Login({ onLoginExitoso }) {
     }
   };
 
-  // Teclado numérico, disposición típica
-  const numeros = [
-    [7, 8, 9],
-    [4, 5, 6],
-    [1, 2, 3],
-  ];
-
   return (
     <div className="bg-dark min-vh-100 d-flex flex-column justify-content-center align-items-center p-3 p-md-4">
       <Card className="shadow-lg p-4 p-md-5 mx-auto login-card rounded-24">
@@ -51,21 +36,7 @@ export default function Login({ onLoginExitoso }) {
           <h1 className="h2 fw-bold text-dark mb-2">
             Acceso<span className="text-primary">Personal</span>
           </h1>
-          <p className="text-secondary fw-medium">Introduzca su PIN para continuar</p>
-        </div>
-
-        {/* Indicadores de PIN */}
-        <div className="d-flex justify-content-center gap-3 mb-5">
-          {[...Array(4)].map((_, i) => (
-            <div 
-              key={i} 
-              className={`rounded-circle transition-all pin-dot ${
-                i < pin.length 
-                  ? 'active bg-primary' 
-                  : 'bg-light border'
-              } ${error ? 'bg-danger border-danger' : ''}`}
-            />
-          ))}
+          <p className="text-secondary fw-medium">Introduzca su credencial para continuar</p>
         </div>
 
         {error && (
@@ -77,50 +48,36 @@ export default function Login({ onLoginExitoso }) {
         {cargando && (
           <div className="text-primary text-center fw-bold mb-4">
             <Spinner animation="border" size="sm" className="me-2" />
-            Verificando código...
+            Verificando credencial...
           </div>
         )}
 
-        {/* Teclado */}
-        <div className="row g-3 mb-2 px-2">
-          {numeros.flat().map((num) => (
-            <div className="col-4" key={num}>
-              <Button
-                variant="light"
-                onClick={() => manejarClickNumero(num.toString())}
-                disabled={cargando}
-                className="w-100 py-3 fs-3 fw-bold text-dark shadow-sm border border-light rounded-16"
-              >
-                {num}
-              </Button>
-            </div>
-          ))}
-          
-          <div className="col-4 ms-auto">
-            <Button
-              variant="light"
-              onClick={() => manejarClickNumero('0')}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-4">
+            <Form.Label className="fw-bold text-secondary">Contraseña / PIN</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="••••"
+              value={pin}
+              onChange={(e) => {
+                setPin(e.target.value);
+                setError('');
+              }}
               disabled={cargando}
-              className="w-100 py-3 fs-3 fw-bold text-dark shadow-sm border border-light rounded-16"
-            >
-              0
-            </Button>
-          </div>
+              autoFocus
+              className="py-3 fs-5"
+            />
+          </Form.Group>
 
-          <div className="col-4">
-            <Button
-              variant="danger"
-              onClick={manejarBorrar}
-              disabled={cargando || pin.length === 0}
-              className="w-100 py-3 d-flex justify-content-center align-items-center shadow-sm border-0 rounded-16"
-              title="Borrar"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
-              </svg>
-            </Button>
-          </div>
-        </div>
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={cargando || !pin}
+            className="w-100 py-3 fw-bold fs-5 shadow-sm rounded-16"
+          >
+            Acceder
+          </Button>
+        </Form>
       </Card>
     </div>
   );

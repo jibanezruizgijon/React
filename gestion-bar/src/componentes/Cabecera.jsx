@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { LogOut, Calculator, Menu } from 'lucide-react';
 import { Button } from 'react-bootstrap';
 import Calculadora from './Calculadora';
+import { useAuth } from '../contextos/AuthContext';
 
-export default function Cabecera({ usuarioAutenticado, onCerrarSesion, onToggleSidebar }) {
+export default function Cabecera({ onToggleSidebar }) {
+  const { logout } = useAuth();
   const [mostrarCalc, setMostrarCalc] = useState(false);
 
   return (
@@ -38,7 +40,7 @@ export default function Cabecera({ usuarioAutenticado, onCerrarSesion, onToggleS
         {/* Cierre de sesión */}
         <Button
           variant="outline-danger"
-          onClick={onCerrarSesion}
+          onClick={logout}
           className="d-flex align-items-center gap-2 shadow-sm"
         >
           <LogOut className="w-4 h-4" />

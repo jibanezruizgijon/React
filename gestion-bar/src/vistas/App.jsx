@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Login';
 import PanelPrincipal from './trabajador/PanelPrincipal';
 import PanelTrabajadores from './administrador/PanelTrabajadores';
@@ -12,38 +12,14 @@ import ClienteReserva from './cliente/ClienteReserva';
 import Sidebar from '../componentes/Sidebar';
 import Cabecera from '../componentes/Cabecera';
 import { Container } from 'react-bootstrap';
+import { useAuth } from '../contextos/AuthContext';
 
 export default function App() {
-  const [usuarioAutenticado, setUsuarioAutenticado] = useState(null);
+  const { usuario } = useAuth();
   const [showSidebar, setShowSidebar] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const manejarCerrarSesion = () => {
-    setUsuarioAutenticado(null);
-    navigate('/login');
-  };
 
   const handleToggleSidebar = () => setShowSidebar(!showSidebar);
 
-  // Rutas públicas a las que puede acceder cualquier usuario sin login
-  const rutasPublicas = ['/', '/carta', '/reserva'];
-
-  useEffect(() => {
-    // Si no está logueado, no está en una ruta pública ni en '/login', lo mandamos al login
-    if (!usuarioAutenticado && location.pathname !== '/login' && !rutasPublicas.includes(location.pathname)) {
-      navigate('/login');
-    }
-  }, [usuarioAutenticado, location.pathname, navigate, rutasPublicas]);
-
-  const manejarLogin = (usuario) => {
-    setUsuarioAutenticado(usuario);
-    if (usuario.rol === 'Administrador') {
-      navigate('/admin/trabajadores');
-    } else {
-      navigate('/mesas');
-    }
-  };
 
   return (
     <Routes>
@@ -54,31 +30,29 @@ export default function App() {
 
       {/* RUTA DE LOGIN */}
       <Route path="/login" element={
-        !usuarioAutenticado ? (
-          <Login onLoginExitoso={manejarLogin} />
+        !usuario ? (
+          <Login />
         ) : (
-          <Navigate to={usuarioAutenticado.rol === 'Administrador' ? '/admin/trabajadores' : '/mesas'} />
+          <Navigate to={usuario.rol === 'Administrador' ? '/admin/trabajadores' : '/mesas'} />
         )
       } />
       
       {/* RUTAS PROTEGIDAS (TRABAJADORES Y ADMIN) */}
-      {usuarioAutenticado && (
+      {usuario && (
         <Route element={
           <div className="d-flex vh-100 bg-light overflow-hidden">
-            <Sidebar usuario={usuarioAutenticado} show={showSidebar} onHide={() => setShowSidebar(false)} />
+            <Sidebar show={showSidebar} onHide={() => setShowSidebar(false)} />
             <div className="flex-grow-1 d-flex flex-column overflow-auto position-relative">
               <div className="p-3 p-md-4 p-lg-5">
                 <Cabecera 
-                  usuarioAutenticado={usuarioAutenticado} 
-                  onCerrarSesion={manejarCerrarSesion} 
                   onToggleSidebar={handleToggleSidebar} 
                 />
                 <Routes>
                   {/* Rutas de Camarero */}
-                  <Route path="/mesas" element={<PanelPrincipal usuarioAutenticado={usuarioAutenticado} />} />
+                  <Route path="/mesas" element={<PanelPrincipal />} />
                   
                   {/* Rutas de Administrador */}
-                  {usuarioAutenticado.rol === 'Administrador' && (
+                  {usuario.rol === 'Administrador' && (
                     <>
                       <Route path="/admin/trabajadores" element={<PanelTrabajadores />} />
                       <Route path="/admin/trabajadores/nuevo" element={<FormularioTrabajador />} />
@@ -88,7 +62,7 @@ export default function App() {
                     </>
                   )}
                   {/* Fallback protejido a su rol */}
-                  <Route path="*" element={<Navigate to={usuarioAutenticado.rol === 'Administrador' ? '/admin/trabajadores' : '/mesas'} />} />
+                  <Route path="*" element={<Navigate to={usuario.rol === 'Administrador' ? '/admin/trabajadores' : '/mesas'} />} />
                 </Routes>
               </div>
             </div>
