@@ -1,69 +1,70 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { Link } from 'react-router-dom'
-import { Container, Row, Col, Table, Button,} from 'react-bootstrap'
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Container, Row, Col, Table, Button } from 'react-bootstrap';
+import { obtenerEmpleados, eliminarEmpleado } from '../service/api';
+
 const EmployeeList = () => {
-    const API_URL = "http://localhost:8080/api/employees";
+    const [employees, setEmployees] = useState([]);
 
-    const [employees, setEmployees] = useState([])
-
-    // Obtener la lista de empleados
-    const fetchEmployees = async () => {
-        axios.get(API_URL).then(response => {
-            setEmployees(response.data);
-            console.log(response.data)
-        })
-            .catch(error => console.error(error));
+    const cargarEmpleados = async () => {
+        try {
+            const datos = await obtenerEmpleados();
+            setEmployees(datos);
+        } catch (error) {
+            alert("Error al conectar con el servidor");
+        }
     };
 
-    //Eliminar un empleado por su ID
-    const deleteEmployee = async (id) => {
-        axios.delete(`${API_URL}/${id}`).then(response => {
-            console.log(response.data);
-            fetchEmployees();
-        })
-            .catch(error => console.error(error));
+    const manejarEliminar = async (id) => {
+        if (window.confirm("¿Estás seguro de eliminar este empleado?")) {
+            try {
+                await eliminarEmpleado(id);
+                // Refrescamos la lista tras eliminar
+                cargarEmpleados();
+            } catch (error) {
+                alert("No se pudo eliminar al empleado");
+            }
+        }
     };
 
     useEffect(() => {
-        fetchEmployees();
-    }, [])
+        cargarEmpleados();
+    }, []);
 
     return (
-        <div>
-            <h1>Employee List</h1>
-            <Container>
-                <Row>
-                    <Col>
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Acciones</th>
+        <Container className="mt-4">
+            <Row>
+                <Col>
+                    <h2 className="mb-4">Lista de Personal</h2>
+                    <Table striped bordered hover responsive>
+                        <thead className="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Rol</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {employees.map((employee) => (
+                                <tr key={employee.id}>
+                                    <td>{employee.id}</td>
+                                    <td>{employee.name}</td>
+                                    <td>{employee.role}</td>
+                                    <td className="d-flex gap-2">
+                                        <Link to={`/edit/${employee.id}`} className='btn btn-success btn-sm'>Editar</Link>
+                                        <Button variant="danger" size="sm" onClick={() => manejarEliminar(employee.id)}>
+                                            Eliminar
+                                        </Button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {employees && employees.map((employee) => (
-                                    <tr key={employee.id}>
-                                        <td>{employee.id}</td>
-                                        <td>{employee.name}</td>
-                                        <td>{employee.role}</td>
-                                        <td>
-                                            <Link to={`/edit/${employee.id}`} className='btn btn-success'>Editar</Link>
-                                            <Button variant="danger" onClick ={() => deleteEmployee(employee.id)}>Eliminar</Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                              
-                            </tbody>
-                        </Table>
-                    </Col>
-                </Row>
-            </Container>
-        </div>
-    )
-}
+                            ))}
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
+        </Container>
+    );
+};
 
-export default EmployeeList
+export default EmployeeList;
