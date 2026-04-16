@@ -1,46 +1,9 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, UserPlus, Phone, Mail } from 'lucide-react';
+import { Users, UserPlus } from 'lucide-react';
 import { obtenerPersonal } from '../../servicios/api';
-import { Card, Badge, Spinner, Button, Row, Col } from 'react-bootstrap';
-
-const TarjetaTrabajador = memo(({ trabajador }) => (
-  <Card className="mb-3 border-0 shadow-sm">
-    <Card.Body className="d-flex flex-column flex-md-row align-items-center justify-content-between gap-4 p-4">
-      <div className="flex-grow-1 text-center text-md-start">
-        <div className="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
-          <h3 className="h5 fw-bold text-dark mb-0">{trabajador.nombre}</h3>
-          <Badge bg={trabajador.estado ? 'success' : 'danger'} pill className="text-uppercase fs-8">
-            {trabajador.estado ? 'Alta' : 'De Baja'}
-          </Badge>
-        </div>
-        <p className="text-secondary fw-semibold mb-3">{trabajador.rol}</p>
-        
-        <div className="d-flex flex-column flex-sm-row gap-2 gap-md-4 text-secondary small fw-medium">
-          <div className="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-            <Phone className="text-primary" size={16} />
-            <span>{trabajador.telefono}</span>
-          </div>
-          <div className="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-            <Mail className="text-primary" size={16} />
-            <span>{trabajador.correo}</span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <Button 
-          as={Link} 
-          to={`/admin/trabajadores/editar/${trabajador.id}`}
-          variant="primary"
-          className="fw-bold px-4 py-2"
-        >
-          Administrar
-        </Button>
-      </div>
-    </Card.Body>
-  </Card>
-));
-TarjetaTrabajador.displayName = "TarjetaTrabajador";
+import { Card, Spinner, Button } from 'react-bootstrap';
+import TarjetaEmpleado from '../../componentes/TarjetaEmpleado';
 
 export default function PanelTrabajadores() {
   const [trabajadores, setTrabajadores] = useState([]);
@@ -96,7 +59,7 @@ export default function PanelTrabajadores() {
           <h2 className="fs-5 fw-bold mb-0">Lista de Trabajadores</h2>
         </div>
         <div className="bg-white p-4 rounded-bottom shadow-sm border border-top-0">
-          {trabajadores.map(t => <TarjetaTrabajador key={t.id} trabajador={t} />)}
+          {trabajadores.map(t => <TarjetaEmpleado key={t.id} trabajador={t} />)}
         </div>
       </div>
     </div>
