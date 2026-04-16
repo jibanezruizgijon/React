@@ -65,7 +65,7 @@ export default function FormularioTrabajador() {
   return (
     <div className="mx-auto align-middle mw-600">
       <div className="d-flex align-items-center gap-3 mb-4">
-        <Button variant="light" onClick={() => navigate('/admin/trabajadores')} className="rounded-circle p-2 shadow-sm border border-light d-flex align-items-center justify-content-center square-40">
+        <Button variant="light" onClick={() => navigate('/admin/trabajadores')} className="">
           <ArrowLeft className="w-5 h-5 text-dark" />
         </Button>
         <h2 className="h4 fw-bold text-dark m-0">
