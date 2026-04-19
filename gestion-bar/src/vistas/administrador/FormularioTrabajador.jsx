@@ -17,6 +17,7 @@ export default function FormularioTrabajador() {
     estado: 1,
     pin: ''
   });
+  const [errores, setErrores] = useState({});
   const [cargando, setCargando] = useState(esEdicion);
 
   useEffect(() => {
@@ -30,15 +31,67 @@ export default function FormularioTrabajador() {
   }, [id, esEdicion]);
 
   const manejarCambio = (e) => {
-    const { name, value, type, checked } = e.target;
+    let { name, value, type, checked } = e.target;
+
+    // Control estricto a medida que el usuario escribe
+    if (name === 'telefono') {
+      // Eliminar cualquier caracter que no sea numérico
+      value = value.replace(/\D/g, '');
+      // Limitar a un máximo de 9 dígitos españoles
+      if (value.length > 9) value = value.slice(0, 9);
+    } else if (name === 'pin') {
+      // Eliminar cualquier caracter que no sea numérico
+      value = value.replace(/\D/g, '');
+      // Limitar a 4 dígitos
+      if (value.length > 4) value = value.slice(0, 4);
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? (checked ? 1 : 0) : value
     }));
+    // Limpiar el error cuando el usuario empieza a escribir en el campo
+    if (errores[name]) {
+      setErrores(prev => ({ ...prev, [name]: null }));
+    }
+  };
+
+  const validarFormulario = () => {
+    const nuevosErrores = {};
+    if (!formData.nombre.trim()) {
+      nuevosErrores.nombre = 'El nombre no puede estar vacío';
+    }
+    
+    if (!formData.telefono.trim()) {
+      nuevosErrores.telefono = 'El teléfono no puede estar vacío';
+    } else if (!/^\d+$/.test(formData.telefono)) {
+      nuevosErrores.telefono = 'Solo puede contener números';
+    } else if (formData.telefono.length < 9) {
+      nuevosErrores.telefono = 'Mínimo 9 dígitos';
+    }
+
+    if (!formData.correo.trim()) {
+      nuevosErrores.correo = 'El correo no puede estar vacío';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
+      nuevosErrores.correo = 'Formato de correo inválido';
+    }
+
+    if (!formData.pin.trim()) {
+      nuevosErrores.pin = 'El PIN no puede estar vacío';
+    } else if (!/^\d{4}$/.test(formData.pin)) {
+      nuevosErrores.pin = 'Debe ser de 4 números';
+    }
+
+    setErrores(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
   };
 
   const manejarEnvio = async (e) => {
     e.preventDefault();
+    if (!validarFormulario()) {
+      return;
+    }
+    
     setCargando(true);
     if (esEdicion) {
       await actualizarPersonal(formData);
@@ -75,35 +128,49 @@ export default function FormularioTrabajador() {
 
       <Card className="bg-primary text-white border-0 shadow-lg p-3 p-md-4 rounded-4 position-relative overflow-hidden">
         <Card.Body className="position-relative z-1">
-          <Form onSubmit={manejarEnvio}>
+          <Form onSubmit={manejarEnvio} noValidate>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold small">Nombre:</Form.Label>
+              <div className="d-flex justify-content-between align-items-end mb-1">
+                <Form.Label className="fw-semibold small m-0">Nombre:</Form.Label>
+                {errores.nombre && <span className="text-warning small fw-bold px-2 py-1 bg-warning bg-opacity-25 rounded">{errores.nombre}</span>}
+              </div>
               <Form.Control 
-                required type="text" name="nombre" value={formData.nombre} onChange={manejarCambio}
-                className="py-2 border-0 shadow-sm"
+                type="text" name="nombre" value={formData.nombre} onChange={manejarCambio}
+                className={`py-2 border-0 shadow-sm ${errores.nombre ? 'border border-warning' : ''}`}
+                style={errores.nombre ? {boxShadow: '0 0 0 2px #ffc107'} : {}}
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold small">Teléfono:</Form.Label>
+              <div className="d-flex justify-content-between align-items-end mb-1">
+                <Form.Label className="fw-semibold small m-0">Teléfono:</Form.Label>
+                {errores.telefono && <span className="text-warning small fw-bold px-2 py-1 bg-warning bg-opacity-25 rounded">{errores.telefono}</span>}
+              </div>
               <Form.Control 
-                required type="text" name="telefono" value={formData.telefono} onChange={manejarCambio}
-                className="py-2 border-0 shadow-sm"
+                type="text" name="telefono" value={formData.telefono} onChange={manejarCambio}
+                className={`py-2 border-0 shadow-sm ${errores.telefono ? 'border border-warning' : ''}`}
+                style={errores.telefono ? {boxShadow: '0 0 0 2px #ffc107'} : {}}
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold small">Correo:</Form.Label>
+              <div className="d-flex justify-content-between align-items-end mb-1">
+                <Form.Label className="fw-semibold small m-0">Correo:</Form.Label>
+                {errores.correo && <span className="text-warning small fw-bold px-2 py-1 bg-warning bg-opacity-25 rounded">{errores.correo}</span>}
+              </div>
               <Form.Control 
-                required type="email" name="correo" value={formData.correo} onChange={manejarCambio}
-                className="py-2 border-0 shadow-sm"
+                type="email" name="correo" value={formData.correo} onChange={manejarCambio}
+                className={`py-2 border-0 shadow-sm ${errores.correo ? 'border border-warning' : ''}`}
+                style={errores.correo ? {boxShadow: '0 0 0 2px #ffc107'} : {}}
               />
             </Form.Group>
 
             <Row className="g-3 mb-3">
               <Col sm={6}>
                 <Form.Group>
-                  <Form.Label className="fw-semibold small">Rol:</Form.Label>
+                  <div className="d-flex justify-content-between align-items-end mb-1">
+                    <Form.Label className="fw-semibold small m-0">Rol:</Form.Label>
+                  </div>
                   <Form.Select 
                     name="rol" value={formData.rol} onChange={manejarCambio}
                     className="py-2 border-0 shadow-sm"
@@ -116,16 +183,20 @@ export default function FormularioTrabajador() {
               </Col>
               <Col sm={6}>
                 <Form.Group>
-                  <Form.Label className="fw-semibold small">PIN de Acceso:</Form.Label>
+                  <div className="d-flex justify-content-between align-items-end mb-1">
+                    <Form.Label className="fw-semibold small m-0">PIN de Acceso:</Form.Label>
+                    {errores.pin && <span className="text-warning small fw-bold px-2 py-1 bg-warning bg-opacity-25 rounded">{errores.pin}</span>}
+                  </div>
                   <Form.Control 
-                    required type="text" name="pin" value={formData.pin} onChange={manejarCambio} maxLength={4}
-                    className="py-2 border-0 shadow-sm font-monospace text-center fw-bold"
+                    type="text" name="pin" value={formData.pin} onChange={manejarCambio} maxLength={4}
+                    className={`py-2 border-0 shadow-sm font-monospace text-center fw-bold ${errores.pin ? 'border border-warning' : ''}`}
+                    style={errores.pin ? {boxShadow: '0 0 0 2px #ffc107'} : {}}
                   />
                 </Form.Group>
               </Col>
             </Row>
 
-            <Form.Group className="mb-4">
+            <Form.Group className="mb-4 mt-3">
               <Form.Check 
                 type="checkbox" 
                 id="estado-checkbox"

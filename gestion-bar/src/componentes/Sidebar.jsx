@@ -8,7 +8,7 @@ import {
 
 import '../estilos/global.css'; // For custom styling if needed
 import { useAuth } from '../contextos/AuthContext';
-
+import { Offcanvas, Nav, Badge } from 'react-bootstrap';
 export default function Sidebar({ show, onHide }) {
   const { usuario } = useAuth();
   const isAdmin = usuario?.rol === 'Administrador';
