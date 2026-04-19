@@ -33,10 +33,10 @@ export default function App() {
         !usuario ? (
           <Login />
         ) : (
-          <Navigate to={usuario.rol === 'Administrador' ? '/admin/trabajadores' : '/mesas'} />
+          <Navigate to={usuario.rol === 'administrador' ? '/admin/trabajadores' : '/mesas'} />
         )
       } />
-      
+
       {/* RUTAS PROTEGIDAS (TRABAJADORES Y ADMIN) */}
       {usuario && (
         <Route element={
@@ -44,13 +44,13 @@ export default function App() {
             <Sidebar show={showSidebar} onHide={() => setShowSidebar(false)} />
             <div className="flex-grow-1 d-flex flex-column overflow-auto position-relative">
               <div className="p-3 p-md-4 p-lg-5">
-                <Cabecera 
-                  onToggleSidebar={handleToggleSidebar} 
+                <Cabecera
+                  onToggleSidebar={handleToggleSidebar}
                 />
                 <Routes>
                   {/* Rutas de Camarero */}
                   <Route path="/mesas" element={<PanelPrincipal />} />
-                  
+
                   {/* Rutas de Administrador */}
                   {usuario.rol === 'Administrador' && (
                     <>
@@ -68,7 +68,7 @@ export default function App() {
             </div>
           </div>
         }>
-           {/* El asterisco aquí asegura que todas las rutas bajo autenticación sean procesadas */}
+          {/* El asterisco aquí asegura que todas las rutas bajo autenticación sean procesadas */}
           <Route path="/*" />
         </Route>
       )}

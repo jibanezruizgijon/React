@@ -5,7 +5,7 @@ import {
   BookOpen, 
   LayoutDashboard 
 } from 'lucide-react';
-import { Offcanvas, Nav, Badge } from 'react-bootstrap';
+
 import '../estilos/global.css'; // For custom styling if needed
 import { useAuth } from '../contextos/AuthContext';
 
