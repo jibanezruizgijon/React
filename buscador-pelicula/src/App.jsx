@@ -1,0 +1,77 @@
+import './App.css'
+import { Peliculas } from './components/Peliculas'
+import { usePeliculas } from './hooks/usePeliculas'
+import { useRef, useEffect, useState } from 'react'
+
+
+function useSearch() {
+  const [search, setSearch] = useState("")
+  const [error, setError] = useState(null)
+  const isFirstInput = useRef(true)
+
+  useEffect(() => {
+    
+    if(isFirstInput.current) {
+      isFirstInput.current = search === ""
+      return
+    }
+    if (search === "") {
+      setError("No se puede buscar una pelicula vacía")
+      return
+    }
+
+    if (search.length < 3) {
+      setError("La pelicula debe tener al menos 3 caracteres")
+      return
+    }
+    
+    setError(null)
+  }, [search])
+  return { search, setSearch, error }
+}
+
+function App() {
+  const { search, setSearch, error } = useSearch()
+  const { peliculas, getPeliculas } = usePeliculas({search})
+  
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    getPeliculas()
+  }
+
+  const handleChangue = (e) => {
+    setSearch(e.target.value)
+  }
+
+
+
+  // Api key :  21191c88
+  return (
+    <div className='page'>
+      <header>
+        <h1>Buscador de películas</h1>
+        <form onSubmit={handleSubmit} className='form'>
+          <input
+            style={{
+              border: "1px solid",
+              borderColor: error ? "red" : "transparent"
+            }}
+            onChange={handleChangue}
+            name="query" value={search}
+            className='input'
+            type="text"
+            placeholder='Search' />
+          <button className='button' type="submit">Search</button>
+        </form>
+        {error && <p className='error'>{error}</p>}
+      </header>
+      <main>
+        <Peliculas peliculas={peliculas} />
+      </main>
+    </div>
+  )
+}
+
+export default App

@@ -1,33 +1,20 @@
-import { useState } from "react"
+import { use, useState } from "react"
 import { useEffect } from "react"
 import "./App.css"
-import {getRandomFact} from './services/facts.js'
+import { getRandomFact } from './services/facts.js'
+import { useCatImage } from "./hooks/useCatImage.js"
+import { useCatFact } from "./hooks/useCatFact.js"
+import Otro from "./components/Otro.jsx"
 const API_URL = "https://catfact.ninja/fact"
 
+
+
 function App() {
-  const [fact, setFact] = useState("");
-  const [imagen, setImagen] = useState("");
-
-  useEffect(() => {
-    getRandomFact().then(setFact)
-  }, [])
-
-  useEffect(() => {
-    if (!fact) return
-    const primeraPalabra = fact.split(' ', 3).join(' ');
-    console.log(primeraPalabra);
-
-    fetch(`https://cataas.com/cat/says/${primeraPalabra}?size=50&color=red&json=true`)
-      .then(respuesta => respuesta.json())
-      .then(response => {
-        console.log(response);
-        const { url } = response
-        setImagen(url);
-      })
-  }, [fact])
+  const { fact, refreshFact } = useCatFact()
+  const { imagen } = useCatImage({ fact })
 
   const handleClick = async () => {
-    await getRandomFact().then(setFact)
+    refreshFact()
   }
 
   return (
@@ -39,6 +26,8 @@ function App() {
       {imagen &&
         <img src={imagen} alt={`imagen extraida de la api: ${fact}`} />}
       <button onClick={handleClick}>Cargar nuevo gatito </button>
+
+      <Otro></Otro>
     </main>
   )
 }
