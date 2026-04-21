@@ -15,16 +15,16 @@ export default function PanelInventario() {
     });
   }, []);
 
+  const manejarImprimir = () => {
+    window.print();
+  };
+
   if (cargando) return (
     <div className="text-center p-5 text-primary">
       <Spinner animation="border" />
       <div className="mt-3 fw-bold">Cargando inventario...</div>
     </div>
   );
-
-  const manejarImprimir = () => {
-    window.print();
-  };
 
   return (
     <Row className="g-4">

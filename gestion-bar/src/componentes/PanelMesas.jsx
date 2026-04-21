@@ -8,13 +8,21 @@ export default function PanelMesas({ mesas, onSeleccionarMesa }) {
         Estado del Salón
       </h2>
       
-      <Row xs={2} md={3} lg={4} className="g-4">
+      <div className="d-flex flex-wrap justify-content-center gap-4">
         {mesas.map((mesa) => (
-          <Col key={mesa.id}>
+          <div 
+            key={mesa.id} 
+            className="flex-grow-1" 
+            style={{ 
+              minWidth: '220px', 
+              flexBasis: 'calc(50% - 1.5rem)', 
+              maxWidth: '400px' 
+            }}
+          >
             <TarjetaMesa mesa={mesa} onClick={onSeleccionarMesa} />
-          </Col>
+          </div>
         ))}
-      </Row>
+      </div>
       
       {/* Leyenda */}
       <div className="mt-5 d-flex gap-4 small fw-medium justify-content-center border-top pt-4 text-secondary">
