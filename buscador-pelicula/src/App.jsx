@@ -10,8 +10,8 @@ function useSearch() {
   const isFirstInput = useRef(true)
 
   useEffect(() => {
-    
-    if(isFirstInput.current) {
+
+    if (isFirstInput.current) {
       isFirstInput.current = search === ""
       return
     }
@@ -24,7 +24,7 @@ function useSearch() {
       setError("La pelicula debe tener al menos 3 caracteres")
       return
     }
-    
+
     setError(null)
   }, [search])
   return { search, setSearch, error }
@@ -32,20 +32,22 @@ function useSearch() {
 
 function App() {
   const { search, setSearch, error } = useSearch()
-  const { peliculas, getPeliculas } = usePeliculas({search})
-  
+  const [sort, setSort] = useState(false)
+  const { peliculas, getPeliculas, loading } = usePeliculas({ search, sort })
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    getPeliculas()
+    getPeliculas({search})
   }
 
   const handleChangue = (e) => {
     setSearch(e.target.value)
   }
 
-
+  const handleSort = () => {
+    setSort(!sort)
+  }
 
   // Api key :  21191c88
   return (
@@ -63,12 +65,16 @@ function App() {
             className='input'
             type="text"
             placeholder='Search' />
+          <input type="checkbox" onChange={handleSort} checked={sort} />
           <button className='button' type="submit">Search</button>
         </form>
         {error && <p className='error'>{error}</p>}
       </header>
       <main>
-        <Peliculas peliculas={peliculas} />
+        {
+          loading ? <p>Cargando...</p> : <Peliculas peliculas={peliculas} />
+        }
+
       </main>
     </div>
   )

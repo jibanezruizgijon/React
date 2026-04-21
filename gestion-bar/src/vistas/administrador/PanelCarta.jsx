@@ -2,7 +2,7 @@ import { useState, useEffect, memo } from 'react';
 import { PlusCircle, Edit2 } from 'lucide-react';
 import { obtenerProductos, crearProducto, actualizarProducto, eliminarProducto } from '../../servicios/api';
 import { Card, Row, Col, Badge, Button, Spinner, Toast, ToastContainer } from 'react-bootstrap';
-import ModalGestionProducto from '../../componentes/ModalGestionProducto';
+import ModalGestionProducto from '../../componentes/inventario/ModalGestionProducto';
 
 const ProductoCarta = memo(({ producto, onEdit }) => (
   <Card className="h-100 border-0 shadow-sm flex-row overflow-hidden transition-all hover-transform position-relative">

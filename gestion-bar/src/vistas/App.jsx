@@ -9,8 +9,8 @@ import PanelCarta from './administrador/PanelCarta';
 import ClienteHome from './cliente/ClienteHome';
 import ClienteCarta from './cliente/ClienteCarta';
 import ClienteReserva from './cliente/ClienteReserva';
-import Sidebar from '../componentes/Sidebar';
-import Cabecera from '../componentes/Cabecera';
+import Sidebar from '../componentes/comunes/Sidebar';
+import Cabecera from '../componentes/comunes/Cabecera';
 import { Container } from 'react-bootstrap';
 import { useAuth } from '../contextos/AuthContext';
 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, Container, Button } from 'react-bootstrap';
-import ModalAlergenos from '../../componentes/ModalAlergenos';
+import ModalAlergenos from '../../componentes/comunes/ModalAlergenos';
 import { useState } from 'react';
 
 export default function ClienteHome() {

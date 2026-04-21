@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Save, Trash2, ArrowLeft } from 'lucide-react';
 import { obtenerPersonal, agregarPersonal, actualizarPersonal, eliminarPersonal } from '../../servicios/api';
-import { Card, Form, Button, Spinner, Row, Col } from 'react-bootstrap';
+import { Card, Form, Button, Spinner, Row, Col, Modal } from 'react-bootstrap';
 
 export default function FormularioTrabajador() {
   const { id } = useParams();
@@ -18,7 +18,9 @@ export default function FormularioTrabajador() {
     pin: ''
   });
   const [errores, setErrores] = useState({});
+  const [touched, setTouched] = useState({});
   const [cargando, setCargando] = useState(esEdicion);
+  const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
 
   useEffect(() => {
     if (esEdicion) {
@@ -30,59 +32,80 @@ export default function FormularioTrabajador() {
     }
   }, [id, esEdicion]);
 
+  const validarCampo = (name, value) => {
+    let error = null;
+    const valString = String(value);
+
+    if (name === 'nombre' && !valString.trim()) {
+      error = 'El nombre no puede estar vacío';
+    } else if (name === 'telefono') {
+      if (!valString.trim()) {
+        error = 'El teléfono no puede estar vacío';
+      } else if (!/^\d+$/.test(valString)) {
+        error = 'Solo puede contener números';
+      } else if (valString.length < 9) {
+        error = 'Mínimo 9 dígitos';
+      }
+    } else if (name === 'correo') {
+      if (!valString.trim()) {
+        error = 'El correo no puede estar vacío';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valString)) {
+        error = 'Formato de correo inválido';
+      }
+    } else if (name === 'pin') {
+      if (!valString.trim()) {
+        error = 'El PIN no puede estar vacío';
+      } else if (!/^\d{4}$/.test(valString)) {
+        error = 'Debe ser de 4 números';
+      }
+    }
+    return error;
+  };
+
   const manejarCambio = (e) => {
     let { name, value, type, checked } = e.target;
 
     // Control estricto a medida que el usuario escribe
     if (name === 'telefono') {
-      // Eliminar cualquier caracter que no sea numérico
       value = value.replace(/\D/g, '');
-      // Limitar a un máximo de 9 dígitos españoles
       if (value.length > 9) value = value.slice(0, 9);
     } else if (name === 'pin') {
-      // Eliminar cualquier caracter que no sea numérico
       value = value.replace(/\D/g, '');
-      // Limitar a 4 dígitos
       if (value.length > 4) value = value.slice(0, 4);
     }
 
+    const valToSave = type === 'checkbox' ? (checked ? 1 : 0) : value;
+
+    // Marcar como tocado
+    setTouched(prev => ({ ...prev, [name]: true }));
+
+    // Validar con cada cambio
+    const error = validarCampo(name, valToSave);
+    setErrores(prev => ({
+      ...prev,
+      [name]: error
+    }));
+
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (checked ? 1 : 0) : value
+      [name]: valToSave
     }));
-    // Limpiar el error cuando el usuario empieza a escribir en el campo
-    if (errores[name]) {
-      setErrores(prev => ({ ...prev, [name]: null }));
-    }
   };
 
   const validarFormulario = () => {
     const nuevosErrores = {};
-    if (!formData.nombre.trim()) {
-      nuevosErrores.nombre = 'El nombre no puede estar vacío';
-    }
+    const nombresCampos = ['nombre', 'telefono', 'correo', 'pin'];
     
-    if (!formData.telefono.trim()) {
-      nuevosErrores.telefono = 'El teléfono no puede estar vacío';
-    } else if (!/^\d+$/.test(formData.telefono)) {
-      nuevosErrores.telefono = 'Solo puede contener números';
-    } else if (formData.telefono.length < 9) {
-      nuevosErrores.telefono = 'Mínimo 9 dígitos';
-    }
-
-    if (!formData.correo.trim()) {
-      nuevosErrores.correo = 'El correo no puede estar vacío';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
-      nuevosErrores.correo = 'Formato de correo inválido';
-    }
-
-    if (!formData.pin.trim()) {
-      nuevosErrores.pin = 'El PIN no puede estar vacío';
-    } else if (!/^\d{4}$/.test(formData.pin)) {
-      nuevosErrores.pin = 'Debe ser de 4 números';
-    }
+    nombresCampos.forEach(campo => {
+      const error = validarCampo(campo, formData[campo]);
+      if (error) nuevosErrores[campo] = error;
+    });
 
     setErrores(nuevosErrores);
+    setTouched({
+      nombre: true, telefono: true, correo: true, pin: true
+    });
+    
     return Object.keys(nuevosErrores).length === 0;
   };
 
@@ -101,11 +124,14 @@ export default function FormularioTrabajador() {
     navigate('/admin/trabajadores');
   };
 
-  const manejarEliminar = async () => {
-    if (confirm('¿Está seguro de eliminar este trabajador?')) {
-      await eliminarPersonal(formData.id);
-      navigate('/admin/trabajadores');
-    }
+  const manejarEliminar = () => {
+    setMostrarModalEliminar(true);
+  };
+
+  const confirmarEliminar = async () => {
+    setCargando(true);
+    await eliminarPersonal(formData.id);
+    navigate('/admin/trabajadores');
   };
 
   if (cargando && esEdicion) return (
@@ -132,37 +158,46 @@ export default function FormularioTrabajador() {
             <Form.Group className="mb-3">
               <div className="d-flex justify-content-between align-items-end mb-1">
                 <Form.Label className="fw-semibold small m-0">Nombre:</Form.Label>
-                {errores.nombre && <span className="text-warning small fw-bold px-2 py-1 bg-warning bg-opacity-25 rounded">{errores.nombre}</span>}
               </div>
               <Form.Control 
                 type="text" name="nombre" value={formData.nombre} onChange={manejarCambio}
-                className={`py-2 border-0 shadow-sm ${errores.nombre ? 'border border-warning' : ''}`}
-                style={errores.nombre ? {boxShadow: '0 0 0 2px #ffc107'} : {}}
+                isInvalid={touched.nombre && !!errores.nombre}
+                style={{ borderColor: touched.nombre && errores.nombre ? 'red' : '' }}
+                className="py-2 shadow-sm"
               />
+              <Form.Control.Feedback type="invalid" className="fw-bold bg-danger bg-opacity-75 text-white px-2 py-1 rounded mt-1">
+                {errores.nombre}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <div className="d-flex justify-content-between align-items-end mb-1">
                 <Form.Label className="fw-semibold small m-0">Teléfono:</Form.Label>
-                {errores.telefono && <span className="text-warning small fw-bold px-2 py-1 bg-warning bg-opacity-25 rounded">{errores.telefono}</span>}
               </div>
               <Form.Control 
                 type="text" name="telefono" value={formData.telefono} onChange={manejarCambio}
-                className={`py-2 border-0 shadow-sm ${errores.telefono ? 'border border-warning' : ''}`}
-                style={errores.telefono ? {boxShadow: '0 0 0 2px #ffc107'} : {}}
+                isInvalid={touched.telefono && !!errores.telefono}
+                style={{ borderColor: touched.telefono && errores.telefono ? 'red' : '' }}
+                className="py-2 shadow-sm"
               />
+              <Form.Control.Feedback type="invalid" className="fw-bold bg-danger bg-opacity-75 text-white px-2 py-1 rounded mt-1">
+                {errores.telefono}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <div className="d-flex justify-content-between align-items-end mb-1">
                 <Form.Label className="fw-semibold small m-0">Correo:</Form.Label>
-                {errores.correo && <span className="text-warning small fw-bold px-2 py-1 bg-warning bg-opacity-25 rounded">{errores.correo}</span>}
               </div>
               <Form.Control 
                 type="email" name="correo" value={formData.correo} onChange={manejarCambio}
-                className={`py-2 border-0 shadow-sm ${errores.correo ? 'border border-warning' : ''}`}
-                style={errores.correo ? {boxShadow: '0 0 0 2px #ffc107'} : {}}
+                isInvalid={touched.correo && !!errores.correo}
+                style={{ borderColor: touched.correo && errores.correo ? 'red' : '' }}
+                className="py-2 shadow-sm"
               />
+              <Form.Control.Feedback type="invalid" className="fw-bold bg-danger bg-opacity-75 text-white px-2 py-1 rounded mt-1">
+                {errores.correo}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Row className="g-3 mb-3">
@@ -185,13 +220,16 @@ export default function FormularioTrabajador() {
                 <Form.Group>
                   <div className="d-flex justify-content-between align-items-end mb-1">
                     <Form.Label className="fw-semibold small m-0">PIN de Acceso:</Form.Label>
-                    {errores.pin && <span className="text-warning small fw-bold px-2 py-1 bg-warning bg-opacity-25 rounded">{errores.pin}</span>}
                   </div>
                   <Form.Control 
                     type="text" name="pin" value={formData.pin} onChange={manejarCambio} maxLength={4}
-                    className={`py-2 border-0 shadow-sm font-monospace text-center fw-bold ${errores.pin ? 'border border-warning' : ''}`}
-                    style={errores.pin ? {boxShadow: '0 0 0 2px #ffc107'} : {}}
+                    isInvalid={touched.pin && !!errores.pin}
+                    style={{ borderColor: touched.pin && errores.pin ? 'red' : '' }}
+                    className="py-2 shadow-sm font-monospace text-center fw-bold"
                   />
+                  <Form.Control.Feedback type="invalid" className="fw-bold bg-danger bg-opacity-75 text-white px-2 py-1 rounded mt-1">
+                    {errores.pin}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -228,6 +266,27 @@ export default function FormularioTrabajador() {
           </Form>
         </Card.Body>
       </Card>
+
+      <Modal show={mostrarModalEliminar} onHide={() => setMostrarModalEliminar(false)} centered>
+        <Modal.Header closeButton className="bg-danger text-white">
+          <Modal.Title className="fw-bold fs-5">Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-4 text-center">
+          <Trash2 className="text-danger mb-3" size={48} />
+          <h4 className="fw-bold mb-3">¿Estás seguro?</h4>
+          <p className="text-muted mb-0">
+            ¿Deseas eliminar al trabajador <strong>{formData.nombre}</strong>? Esta acción no se puede deshacer.
+          </p>
+        </Modal.Body>
+        <Modal.Footer className="bg-light">
+          <Button variant="outline-secondary" onClick={() => setMostrarModalEliminar(false)} disabled={cargando}>
+            Cancelar
+          </Button>
+          <Button variant="danger" className="fw-bold px-4" onClick={confirmarEliminar} disabled={cargando}>
+            Sí, Eliminar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

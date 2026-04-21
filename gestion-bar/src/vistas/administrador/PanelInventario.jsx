@@ -1,19 +1,13 @@
 import { useState, useEffect } from 'react';
 import { obtenerProductos } from '../../servicios/api';
 import { Row, Col, Spinner } from 'react-bootstrap';
-import ResumenInventario from '../../componentes/ResumenInventario';
-import TablaInventario from '../../componentes/TablaInventario';
+import ResumenInventario from '../../componentes/inventario/ResumenInventario';
+import TablaInventario from '../../componentes/inventario/TablaInventario';
+
+import useFetchData from '../../hooks/useFetchData';
 
 export default function PanelInventario() {
-  const [productos, setProductos] = useState([]);
-  const [cargando, setCargando] = useState(true);
-
-  useEffect(() => {
-    obtenerProductos().then(data => {
-      setProductos(data);
-      setCargando(false);
-    });
-  }, []);
+  const { data: productos = [], cargando } = useFetchData(obtenerProductos, []);
 
   const manejarImprimir = () => {
     window.print();

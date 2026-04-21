@@ -3,18 +3,12 @@ import { Link } from 'react-router-dom';
 import { Users, UserPlus } from 'lucide-react';
 import { obtenerPersonal } from '../../servicios/api';
 import { Card, Spinner, Button } from 'react-bootstrap';
-import TarjetaEmpleado from '../../componentes/TarjetaEmpleado';
+import TarjetaEmpleado from '../../componentes/trabajadores/TarjetaEmpleado';
+
+import useFetchData from '../../hooks/useFetchData';
 
 export default function PanelTrabajadores() {
-  const [trabajadores, setTrabajadores] = useState([]);
-  const [cargando, setCargando] = useState(true);
-
-  useEffect(() => {
-    obtenerPersonal().then(data => {
-      setTrabajadores(data);
-      setCargando(false);
-    });
-  }, []);
+  const { data: trabajadores = [], cargando } = useFetchData(obtenerPersonal, []);
 
   if (cargando) return (
     <div className="text-center p-5 text-primary">

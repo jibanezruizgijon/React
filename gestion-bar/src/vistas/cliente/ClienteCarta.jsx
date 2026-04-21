@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, Card, Badge, Modal, Button } from 'react-bootstrap';
 import { obtenerProductos } from '../../servicios/api';
-import ModalAlergenos from '../../componentes/ModalAlergenos';
+import ModalAlergenos from '../../componentes/comunes/ModalAlergenos';
 
 export default function ClienteCarta() {
   const [productos, setProductos] = useState([]);

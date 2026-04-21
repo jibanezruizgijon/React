@@ -9,6 +9,8 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
     precio: '',
     stock: ''
   });
+  const [errores, setErrores] = useState({});
+  const [touched, setTouched] = useState({});
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   const isEditMode = !!producto;
@@ -30,24 +32,74 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
           stock: ''
         });
       }
+      setErrores({});
+      setTouched({});
       setShowConfirmDelete(false);
     }
   }, [show, producto]);
 
+  const validarCampo = (name, value) => {
+    let error = null;
+    const valString = String(value);
+
+    if (name === 'nombre' && valString.trim() === '') {
+      error = 'El nombre es obligatorio';
+    } else if (name === 'categoria' && valString.trim() === '') {
+      error = 'La categoría es obligatoria';
+    } else if (name === 'precio') {
+      if (valString === '') error = 'El precio es obligatorio';
+      else if (parseFloat(valString) < 0) error = 'El precio no puede ser negativo';
+    } else if (name === 'stock') {
+      if (valString === '') error = 'El stock es obligatorio';
+      else if (parseInt(valString, 10) < 0) error = 'El stock no puede ser negativo';
+    }
+    return error;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Marcar como tocado
+    setTouched(prev => ({ ...prev, [name]: true }));
+    
+    // Validar con cada cambio de letra
+    const error = validarCampo(name, value);
+    setErrores(prev => ({
+      ...prev,
+      [name]: error
+    }));
+
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const validarFormulario = () => {
+    const nuevosErrores = {};
+    const nombresCampos = ['nombre', 'categoria', 'precio', 'stock'];
+    
+    nombresCampos.forEach(campo => {
+      const error = validarCampo(campo, formData[campo]);
+      if (error) nuevosErrores[campo] = error;
+    });
+    
+    setErrores(nuevosErrores);
+    setTouched({
+      nombre: true, categoria: true, precio: true, stock: true
+    });
+    
+    return Object.keys(nuevosErrores).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({
-      ...producto,
-      nombre: formData.nombre,
-      categoria: formData.categoria,
-      precio: parseFloat(formData.precio),
-      stock: parseInt(formData.stock, 10)
-    });
+    if (validarFormulario()) {
+      onSave({
+        ...producto,
+        nombre: formData.nombre,
+        categoria: formData.categoria,
+        precio: parseFloat(formData.precio),
+        stock: parseInt(formData.stock, 10)
+      });
+    }
   };
 
   if (showConfirmDelete) {
@@ -94,9 +146,13 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
                   name="nombre"
                   value={formData.nombre}
                   onChange={handleChange}
-                  required
+                  isInvalid={touched.nombre && !!errores.nombre}
+                  style={{ borderColor: touched.nombre && errores.nombre ? 'red' : '' }}
                   placeholder="Ej. Cerveza Mahou"
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errores.nombre}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             
@@ -108,9 +164,13 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
                   name="categoria"
                   value={formData.categoria}
                   onChange={handleChange}
-                  required
+                  isInvalid={touched.categoria && !!errores.categoria}
+                  style={{ borderColor: touched.categoria && errores.categoria ? 'red' : '' }}
                   placeholder="Ej. Bebidas, Tapas..."
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errores.categoria}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
 
@@ -124,9 +184,13 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
                   name="precio"
                   value={formData.precio}
                   onChange={handleChange}
-                  required
+                  isInvalid={touched.precio && !!errores.precio}
+                  style={{ borderColor: touched.precio && errores.precio ? 'red' : '' }}
                   placeholder="0.00"
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errores.precio}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
 
@@ -139,9 +203,13 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
                   name="stock"
                   value={formData.stock}
                   onChange={handleChange}
-                  required
+                  isInvalid={touched.stock && !!errores.stock}
+                  style={{ borderColor: touched.stock && errores.stock ? 'red' : '' }}
                   placeholder="Cantidad en almacén"
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errores.stock}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>

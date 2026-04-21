@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import PanelMesas from '../../componentes/PanelMesas';
-import CuentaDetalle from '../../componentes/CuentaDetalle';
+import PanelMesas from '../../componentes/mesas/PanelMesas';
+import CuentaDetalle from '../../componentes/tpv/CuentaDetalle';
 import { obtenerMesas, actualizarEstadoMesa, obtenerCuentaMesa, guardarPedido, cerrarCuenta, actualizarCantidadProducto, eliminarProductoCuenta } from '../../servicios/api';
 import { Row, Col, Spinner, Container } from 'react-bootstrap';
-import ModalAñadirProducto from '../../componentes/ModalAñadirProducto';
+import ModalAñadirProducto from '../../componentes/tpv/ModalAñadirProducto';
 
 export default function PanelPrincipal() {
   const [mesas, setMesas] = useState([]);
