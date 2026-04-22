@@ -6,7 +6,10 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [usuarioAutenticado, setUsuarioAutenticado] = useState(null);
+  const [usuarioAutenticado, setUsuarioAutenticado] = useState(() => {
+    const savedUser = localStorage.getItem('usuario');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,9 +23,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [usuarioAutenticado, location.pathname, navigate]);
 
-  const login = (usuario) => {
-    setUsuarioAutenticado(usuario);
-    if (usuario.rol === 'Administrador') {
+  const login = (data) => {
+    // data must contain { token, usuario }
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('usuario', JSON.stringify(data.usuario));
+    setUsuarioAutenticado(data.usuario);
+    
+    if (data.usuario.rol === 'Administrador') {
       navigate('/admin/trabajadores');
     } else {
       navigate('/mesas');
@@ -30,6 +37,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
     setUsuarioAutenticado(null);
     navigate('/login');
   };

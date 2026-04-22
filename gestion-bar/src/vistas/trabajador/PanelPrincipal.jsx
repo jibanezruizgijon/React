@@ -27,6 +27,7 @@ export default function PanelPrincipal() {
     cargarMesas();
   }, []);
 
+
   const manejarSeleccionMesa = async (mesa) => {
     setMesaSeleccionada(mesa);
     if (mesa.estado === 'libre') {
@@ -37,7 +38,7 @@ export default function PanelPrincipal() {
     } else {
       const cuenta = await obtenerCuentaMesa(mesa.id);
       setProductosCuenta(cuenta);
-    }
+    } 
   };
 
   const manejarAbrirModal = () => {

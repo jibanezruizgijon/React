@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button, Form, Tabs, Tab, Spinner, InputGroup } from 'react-bootstrap';
-import { obtenerProductos } from '../servicios/api';
+import { obtenerProductos } from '../../servicios/api';
 
 export default function ModalAñadirProducto({ show, onHide, onAdd }) {
   const [productos, setProductos] = useState([]);
