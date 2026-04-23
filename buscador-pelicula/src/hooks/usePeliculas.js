@@ -8,7 +8,7 @@ export function usePeliculas({ search, sort }) {
     const previousSearch = useRef(search)
 
 
-    const getPeliculas = useCallback( async ([{search}]) => {
+    const getPeliculas = useCallback( async ({search}) => {
         
             if (search === previousSearch.current) return
             try {
