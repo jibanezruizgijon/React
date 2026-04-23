@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Container, Card, Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { Stepper } from 'primereact/stepper';
+import { StepperPanel } from 'primereact/stepperpanel';
 
 export default function ClienteReserva() {
   const [reservaConfirmada, setReservaConfirmada] = useState(false);
@@ -13,15 +15,12 @@ export default function ClienteReserva() {
   });
 
   const [errores, setErrores] = useState({});
+  const stepperRef = useRef(null);
 
-  // Obtenemos la fecha de hoy para min
   const hoy = new Date();
-  // Formato YYYY-MM-DD
   const minFecha = hoy.toISOString().split('T')[0];
 
   const generarHorasDisponibles = () => {
-    // Si la fecha elegida es hoy y ya han pasado las 14:00, no dejar reservar comida, etc.
-    // Lógica rápida: horas de servicio 13:00 - 16:00 y 20:00 - 23:00
     const horas = [
       '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
       '20:00', '20:30', '21:00', '21:30', '22:00', '22:30'
@@ -29,7 +28,6 @@ export default function ClienteReserva() {
 
     if (!datos.fecha) return horas;
     
-    // Solo permitimos horas futuras si es hoy
     if (datos.fecha === minFecha) {
       const horaActual = hoy.getHours();
       const minActual = hoy.getMinutes();
@@ -47,18 +45,27 @@ export default function ClienteReserva() {
     return horas;
   };
 
-  const manejarEnvio = (e) => {
-    e.preventDefault();
+  const validarPaso1 = () => {
     const nuevosErrores = {};
     if (!datos.fecha) nuevosErrores.fecha = 'Selecciona una fecha';
     if (!datos.hora) nuevosErrores.hora = 'Selecciona una hora';
+    
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrores(nuevosErrores);
+      return false;
+    }
+    return true;
+  };
+
+  const manejarEnvio = (e) => {
+    e.preventDefault();
+    const nuevosErrores = {};
     if (!datos.nombre) nuevosErrores.nombre = 'Obligatorio';
     if (!datos.contacto) nuevosErrores.contacto = 'Obligatorio';
     
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
     } else {
-      // Simular guardado
       setReservaConfirmada(true);
     }
   };
@@ -136,90 +143,124 @@ export default function ClienteReserva() {
 
         <Card className="border-0 shadow-sm rounded-4 bg-soft-blue">
           <Card.Body className="p-4">
-            <Form onSubmit={manejarEnvio}>
-              <Form.Group className="mb-4">
-                <Form.Label className="fw-bold text-dark mb-1">Día:</Form.Label>
-                <Form.Control 
-                  type="date" 
-                  min={minFecha}
-                  className="rounded-3 py-2 border-0 shadow-sm"
-                  value={datos.fecha}
-                  onChange={(e) => {
-                    setDatos({...datos, fecha: e.target.value, hora: ''});
-                    setErrores({...errores, fecha: null});
-                  }}
-                  isInvalid={!!errores.fecha}
-                />
-              </Form.Group>
+            <Stepper ref={stepperRef} linear>
+                <StepperPanel header="Fecha y Hora">
+                    <div className="d-flex flex-column">
+                        <Form.Group className="mb-4">
+                            <Form.Label className="fw-bold text-dark mb-1">Día:</Form.Label>
+                            <Form.Control 
+                            type="date" 
+                            min={minFecha}
+                            className="rounded-3 py-2 border-0 shadow-sm"
+                            value={datos.fecha}
+                            onChange={(e) => {
+                                setDatos({...datos, fecha: e.target.value, hora: ''});
+                                setErrores({...errores, fecha: null});
+                            }}
+                            isInvalid={!!errores.fecha}
+                            />
+                        </Form.Group>
 
-              <Form.Group className="mb-4">
-                <Form.Label className="fw-bold text-dark mb-1">Horas Disponibles:</Form.Label>
-                <Form.Select 
-                  className="rounded-3 py-2 border-0 shadow-sm"
-                  value={datos.hora}
-                  onChange={(e) => {
-                    setDatos({...datos, hora: e.target.value});
-                    setErrores({...errores, hora: null});
-                  }}
-                  isInvalid={!!errores.hora}
-                  disabled={!datos.fecha}
-                >
-                  <option value="">Seleccione la hora</option>
-                  {horasDisponibles.length > 0 ? (
-                    horasDisponibles.map(h => (
-                      <option key={h} value={h}>{h}</option>
-                    ))
-                  ) : (
-                    <option value="" disabled>No hay horas disponibles para hoy</option>
-                  )}
-                </Form.Select>
-              </Form.Group>
+                        <Form.Group className="mb-4">
+                            <Form.Label className="fw-bold text-dark mb-1">Horas Disponibles:</Form.Label>
+                            <Form.Select 
+                            className="rounded-3 py-2 border-0 shadow-sm"
+                            value={datos.hora}
+                            onChange={(e) => {
+                                setDatos({...datos, hora: e.target.value});
+                                setErrores({...errores, hora: null});
+                            }}
+                            isInvalid={!!errores.hora}
+                            disabled={!datos.fecha}
+                            >
+                            <option value="">Seleccione la hora</option>
+                            {horasDisponibles.length > 0 ? (
+                                horasDisponibles.map(h => (
+                                <option key={h} value={h}>{h}</option>
+                                ))
+                            ) : (
+                                <option value="" disabled>No hay horas disponibles para hoy</option>
+                            )}
+                            </Form.Select>
+                        </Form.Group>
 
-              <Form.Group className="mb-4">
-                <Form.Label className="fw-bold text-dark mb-1">Número de personas:</Form.Label>
-                <Form.Select 
-                  className="rounded-3 py-2 border-0 shadow-sm w-50"
-                  value={datos.personas}
-                  onChange={(e) => setDatos({...datos, personas: e.target.value})}
-                >
-                  {[1,2,3,4,5,6,7,8,9,10].map(n => (
-                    <option key={n} value={n}>{n}</option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
+                        <Form.Group className="mb-4">
+                            <Form.Label className="fw-bold text-dark mb-1">Número de personas:</Form.Label>
+                            <Form.Select 
+                            className="rounded-3 py-2 border-0 shadow-sm w-50"
+                            value={datos.personas}
+                            onChange={(e) => setDatos({...datos, personas: e.target.value})}
+                            >
+                            {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                                <option key={n} value={n}>{n}</option>
+                            ))}
+                            </Form.Select>
+                        </Form.Group>
 
-              <Form.Group className="mb-4">
-                <Form.Label className="fw-bold text-dark mb-1">Contacto / Nombre:</Form.Label>
-                <Form.Control 
-                  type="text" 
-                  placeholder="Ej: Juan Pérez"
-                  className="rounded-3 py-2 border-0 shadow-sm mb-2"
-                  value={datos.nombre}
-                  onChange={(e) => {
-                    setDatos({...datos, nombre: e.target.value});
-                    setErrores({...errores, nombre: null});
-                  }}
-                  isInvalid={!!errores.nombre}
-                />
-                <Form.Control 
-                  type="email" 
-                  placeholder="Correo o Teléfono"
-                  className="rounded-3 py-2 border-0 shadow-sm"
-                  value={datos.contacto}
-                  onChange={(e) => {
-                    setDatos({...datos, contacto: e.target.value});
-                    setErrores({...errores, contacto: null});
-                  }}
-                  isInvalid={!!errores.contacto}
-                />
-              </Form.Group>
+                        <div className="d-flex justify-content-end mt-4">
+                            <Button 
+                                variant="primary" 
+                                onClick={() => {
+                                    if (validarPaso1()) stepperRef.current.nextCallback();
+                                }}
+                                className="rounded-pill px-4"
+                            >
+                                Siguiente
+                            </Button>
+                        </div>
+                    </div>
+                </StepperPanel>
+                
+                <StepperPanel header="Contacto">
+                    <div className="d-flex flex-column">
+                        <Form.Group className="mb-4">
+                            <Form.Label className="fw-bold text-dark mb-1">Nombre:</Form.Label>
+                            <Form.Control 
+                            type="text" 
+                            placeholder="Ej: Juan Pérez"
+                            className="rounded-3 py-2 border-0 shadow-sm mb-2"
+                            value={datos.nombre}
+                            onChange={(e) => {
+                                setDatos({...datos, nombre: e.target.value});
+                                setErrores({...errores, nombre: null});
+                            }}
+                            isInvalid={!!errores.nombre}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-4">
+                            <Form.Label className="fw-bold text-dark mb-1">Correo o Teléfono:</Form.Label>
+                            <Form.Control 
+                            type="email" 
+                            placeholder="Contacto"
+                            className="rounded-3 py-2 border-0 shadow-sm"
+                            value={datos.contacto}
+                            onChange={(e) => {
+                                setDatos({...datos, contacto: e.target.value});
+                                setErrores({...errores, contacto: null});
+                            }}
+                            isInvalid={!!errores.contacto}
+                            />
+                        </Form.Group>
 
-              <div className="d-grid mt-5">
-                <Button variant="light" type="submit" className="rounded-pill bg-white shadow-sm fw-bold border-0 py-3 text-dark fs-5 hover-transform">
-                  Reservar
-                </Button>
-              </div>
-            </Form>
+                        <div className="d-flex justify-content-between mt-4">
+                            <Button 
+                                variant="secondary" 
+                                onClick={() => stepperRef.current.prevCallback()}
+                                className="rounded-pill px-4"
+                            >
+                                Atrás
+                            </Button>
+                            <Button 
+                                variant="success" 
+                                onClick={manejarEnvio}
+                                className="rounded-pill px-4 fw-bold"
+                            >
+                                Reservar
+                            </Button>
+                        </div>
+                    </div>
+                </StepperPanel>
+            </Stepper>
           </Card.Body>
         </Card>
       </Container>
