@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.gestionbar.backend.models.Alergeno;
+import java.util.HashSet;
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api")
 public class ProductoController {
@@ -35,6 +39,9 @@ public class ProductoController {
             if (p.getCategoria() != null) {
                 map.put("id_categoria", p.getCategoria().getId());
                 map.put("categoria", p.getCategoria().getNombre());
+            }
+            if (p.getAlergenos() != null) {
+                map.put("alergenos", p.getAlergenos());
             }
             return map;
         }).collect(Collectors.toList());
@@ -71,6 +78,18 @@ public class ProductoController {
             });
             p.setCategoria(cat);
         }
+
+        if (payload.containsKey("alergenos")) {
+            List<Map<String, Object>> alergenosPayload = (List<Map<String, Object>>) payload.get("alergenos");
+            Set<Alergeno> alergenosSet = new HashSet<>();
+            for (Map<String, Object> a : alergenosPayload) {
+                Alergeno alergeno = new Alergeno();
+                alergeno.setId(Long.valueOf(a.get("id").toString()));
+                alergeno.setNombre((String) a.get("nombre"));
+                alergenosSet.add(alergeno);
+            }
+            p.setAlergenos(alergenosSet);
+        }
         
         Producto saved = productoRepository.save(p);
         
@@ -82,6 +101,9 @@ public class ProductoController {
         if (saved.getCategoria() != null) {
             map.put("id_categoria", saved.getCategoria().getId());
             map.put("categoria", saved.getCategoria().getNombre());
+        }
+        if (saved.getAlergenos() != null) {
+            map.put("alergenos", saved.getAlergenos());
         }
         return map;
     }

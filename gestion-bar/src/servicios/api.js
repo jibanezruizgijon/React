@@ -8,3 +8,4 @@ export * from './cuenta';
 export * from './productos';
 export * from './trabajadores';
 export * from './auth';
+export * from './alergenos';

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { validarAcceso } from '../servicios/api';
 import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { useAuth } from '../contextos/AuthContext';
+import { InputOtp } from 'primereact/inputotp';
 
 export default function Login() {
   const { login } = useAuth();
@@ -53,26 +54,26 @@ export default function Login() {
         )}
 
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-4">
-            <Form.Label className="fw-bold text-secondary">Contraseña / PIN</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="••••"
+          <Form.Group className="mb-4 d-flex flex-column align-items-center">
+            <Form.Label className="fw-bold text-secondary mb-3">Contraseña / PIN</Form.Label>
+            <InputOtp
               value={pin}
               onChange={(e) => {
-                setPin(e.target.value);
+                setPin(e.value);
                 setError('');
               }}
+              mask
+              length={4}
               disabled={cargando}
               autoFocus
-              className="py-3 fs-5"
+              className="custom-otp-input"
             />
           </Form.Group>
 
           <Button
             variant="primary"
             type="submit"
-            disabled={cargando || !pin}
+            disabled={cargando || !pin || pin.length < 4}
             className="w-100 py-3 fw-bold fs-5 shadow-sm rounded-16"
           >
             Acceder
