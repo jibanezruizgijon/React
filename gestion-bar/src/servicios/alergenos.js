@@ -1,11 +1,11 @@
 import apiClient from './apiClient';
 
-export const buscarAlergenos = async (nombre = '') => {
+export const obtenerAlergenos = async () => {
   try {
-    const response = await apiClient.get(`/alergenos/buscar?nombre=${encodeURIComponent(nombre)}`);
+    const response = await apiClient.get('/alergenos');
     return response.data;
   } catch (error) {
-    console.error('Error buscando alérgenos:', error);
+    console.error('Error obteniendo alérgenos:', error);
     throw error;
   }
 };

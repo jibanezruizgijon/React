@@ -1,23 +1,22 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { Trash2 } from 'lucide-react';
 import { useFormularioProducto } from '../../hooks/useFormularioProducto';
 import ModalConfirmacion from '../comunes/ModalConfirmacion';
 import { PickList } from 'primereact/picklist';
-import debounce from 'just-debounce-it';
-import { buscarAlergenos } from '../../servicios/api';
+import { obtenerAlergenos, obtenerCategorias } from '../../servicios/api';
 
 export default function ModalGestionProducto({ show, onHide, onSave, onDelete, producto }) {
   const { formData, errores, touched, handleChange, validarFormulario, resetForm, setAlergenos } = useFormularioProducto();
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [sourceAlergenos, setSourceAlergenos] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [categorias, setCategorias] = useState([]);
 
   const isEditMode = !!producto;
 
-  const fetchAlergenos = async (query, targetList) => {
+  const fetchAlergenos = async (targetList) => {
     try {
-      const data = await buscarAlergenos(query);
+      const data = await obtenerAlergenos();
       const targetIds = targetList.map(a => a.id);
       const available = data.filter(a => !targetIds.includes(a.id));
       setSourceAlergenos(available);
@@ -26,30 +25,27 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
     }
   };
 
-  const debouncedFetchAlergenos = useCallback(
-    debounce((query, targetList) => fetchAlergenos(query, targetList), 300),
-    []
-  );
+  const fetchCategorias = async () => {
+    try {
+      const data = await obtenerCategorias();
+      setCategorias(data);
+    } catch (err) {
+      console.error('Failed to fetch categorias', err);
+    }
+  };
 
   useEffect(() => {
     if (show) {
       resetForm(producto);
       setShowConfirmDelete(false);
-      setSearchTerm('');
-      // Inicializar lista de alérgenos disponibles al abrir
-      fetchAlergenos('', producto?.alergenos || []);
+      fetchAlergenos(producto?.alergenos || []);
+      fetchCategorias();
     }
   }, [show, producto, resetForm]);
 
   const handlePickListChange = (e) => {
     setSourceAlergenos(e.source);
     setAlergenos(e.target);
-  };
-
-  const handleSearchChange = (e) => {
-    const val = e.target.value;
-    setSearchTerm(val);
-    debouncedFetchAlergenos(val, formData.alergenos);
   };
 
   const handleSubmit = (e) => {
@@ -97,7 +93,7 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
           {isEditMode ? 'Editar Producto' : 'Añadir Nuevo Producto'}
         </Modal.Title>
       </Modal.Header>
-      
+
       <Form onSubmit={handleSubmit}>
         <Modal.Body className="p-4">
           <Row className="g-4">
@@ -114,25 +110,29 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
                       isInvalid={touched.nombre && !!errores.nombre}
                       style={{ borderColor: touched.nombre && errores.nombre ? 'red' : '' }}
                       placeholder="Ej. Cerveza Mahou"
+                      maxLength={100}
                     />
                     <Form.Control.Feedback type="invalid">
                       {errores.nombre}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
-                
+
                 <Col md={12}>
                   <Form.Group>
                     <Form.Label className="fw-semibold">Categoría</Form.Label>
-                    <Form.Control
-                      type="text"
+                    <Form.Select
                       name="categoria"
                       value={formData.categoria}
                       onChange={handleChange}
                       isInvalid={touched.categoria && !!errores.categoria}
                       style={{ borderColor: touched.categoria && errores.categoria ? 'red' : '' }}
-                      placeholder="Ej. Bebidas, Tapas..."
-                    />
+                    >
+                      <option value="">-- Selecciona una categoría --</option>
+                      {categorias.map(cat => (
+                        <option key={cat.id} value={cat.nombre}>{cat.nombre}</option>
+                      ))}
+                    </Form.Select>
                     <Form.Control.Feedback type="invalid">
                       {errores.categoria}
                     </Form.Control.Feedback>
@@ -146,9 +146,11 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
                       type="number"
                       step="0.01"
                       min="0"
+                      max="9999.99"
                       name="precio"
                       value={formData.precio}
                       onChange={handleChange}
+                      onKeyDown={(e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()}
                       isInvalid={touched.precio && !!errores.precio}
                       style={{ borderColor: touched.precio && errores.precio ? 'red' : '' }}
                       placeholder="0.00"
@@ -165,9 +167,11 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
                     <Form.Control
                       type="number"
                       min="0"
+                      max="9999"
                       name="stock"
                       value={formData.stock}
                       onChange={handleChange}
+                      onKeyDown={(e) => ['e', 'E', '+', '.'].includes(e.key) && e.preventDefault()}
                       isInvalid={touched.stock && !!errores.stock}
                       style={{ borderColor: touched.stock && errores.stock ? 'red' : '' }}
                       placeholder="Cantidad en almacén"
@@ -184,23 +188,16 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
               <Form.Group>
                 <div className="d-flex justify-content-between align-items-center mb-2">
                   <Form.Label className="fw-semibold m-0">Gestión de Alérgenos</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Buscar alérgeno..."
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    className="w-50 shadow-sm"
-                  />
                 </div>
-                
-                <PickList 
-                  source={sourceAlergenos} 
-                  target={formData.alergenos} 
-                  itemTemplate={alergenoTemplate} 
-                  sourceHeader="Disponibles" 
-                  targetHeader="Seleccionados" 
-                  sourceStyle={{ height: '300px' }} 
-                  targetStyle={{ height: '300px' }} 
+
+                <PickList
+                  source={sourceAlergenos}
+                  target={formData.alergenos}
+                  itemTemplate={alergenoTemplate}
+                  sourceHeader="Disponibles"
+                  targetHeader="Seleccionados"
+                  sourceStyle={{ height: '300px' }}
+                  targetStyle={{ height: '300px' }}
                   onChange={handlePickListChange}
                   dataKey="id"
                   showSourceControls={false}
@@ -211,12 +208,12 @@ export default function ModalGestionProducto({ show, onHide, onSave, onDelete, p
             </Col>
           </Row>
         </Modal.Body>
-        
+
         <Modal.Footer className="bg-light justify-content-between">
           <div>
             {isEditMode && (
-              <Button 
-                variant="outline-danger" 
+              <Button
+                variant="outline-danger"
                 className="d-flex align-items-center gap-2"
                 onClick={() => setShowConfirmDelete(true)}
               >

@@ -174,6 +174,56 @@ header {
     min-height: 100%;
 }
 
+/* ── Alérgenos ── */
+/* Pequeño badge con icono SVG en ProductoCarta */
+.alergeno-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.15s ease;
+}
+
+.alergeno-badge:hover {
+    transform: scale(1.2);
+}
+
+/* Imagen SVG dentro del badge (carta de productos) */
+.alergeno-icono {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* Imagen SVG grande en ModalAlergenos */
+.alergeno-icono-lg {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+/* Contenedor del icono en la fila del modal */
+.alergeno-modal-icono {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Fallback texto cuando no hay icono */
+.alergeno-texto {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #475569;
+}
+
 
 
 

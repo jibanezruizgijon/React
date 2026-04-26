@@ -41,16 +41,19 @@ export const useFormularioProducto = (productoInicial = null) => {
     let error = null;
     const valString = String(value);
 
-    if (name === 'nombre' && valString.trim() === '') {
-      error = 'El nombre es obligatorio';
+    if (name === 'nombre') {
+      if (valString.trim() === '') error = 'El nombre es obligatorio';
+      else if (valString.length > 100) error = 'El nombre no puede superar los 100 caracteres';
     } else if (name === 'categoria' && valString.trim() === '') {
       error = 'La categoría es obligatoria';
     } else if (name === 'precio') {
       if (valString === '') error = 'El precio es obligatorio';
       else if (parseFloat(valString) <= 0) error = 'El precio debe ser mayor que cero';
+      else if (parseFloat(valString) > 9999.99) error = 'El precio no puede superar 9.999,99 €';
     } else if (name === 'stock') {
       if (valString === '') error = 'El stock es obligatorio';
       else if (parseInt(valString, 10) < 0) error = 'El stock no puede ser negativo';
+      else if (parseInt(valString, 10) > 9999) error = 'El stock no puede superar 9.999 unidades';
     }
     return error;
   };

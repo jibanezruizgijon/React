@@ -9,3 +9,4 @@ export * from './productos';
 export * from './trabajadores';
 export * from './auth';
 export * from './alergenos';
+export * from './categorias';
